@@ -2,9 +2,9 @@
     import "../app.css";
     import Navbar from "./navbar.svelte";
 </script>
-<div>
+<div><center>
     <nav>
         <Navbar />
     </nav>
     <slot />
-</div>
+</center></div>
