@@ -31,8 +31,16 @@ export async function test() {
 export async function addData(collectionName, StringifiedData) {
     const docRef = doc(db, collectionName, "test");
     StringifiedData = JSON.parse(StringifiedData);
+    console.log(StringifiedData)
+    console.log(StringifiedData[0])
     await setDoc(docRef, {
-        StringifiedData
+        StringifiedData[0]
     });
     console.log(StringifiedData);
+}
+export async function getData(collectionName) {
+    const docRef = doc(db, collectionName, "test");
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap.data().StringifiedData);
+    return docSnap.data().StringifiedData;
 }
