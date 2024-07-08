@@ -1,12 +1,15 @@
 <script lang="ts">
     import { Label, Input, Button, Select, Toggle, Range, P } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
+
+    import { test, addData } from "$lib/firebase"
     const handleSubmit = () => {
         alert("Form submited.");
     };
     let rating = 2.5;
     let name = "";
     let brand = "";
+    let price = "";
     let type = "";
     let link = "";
     let speed = "";
@@ -40,6 +43,33 @@
             strokeUnfilledColor: '#FFFFFF'
         }
     }
+    // test();
+    // condence data to JSON
+    let data = [];
+    data.push({
+        name: name,
+        brand: brand,
+        price: price,
+        type: type,
+        link: link,
+        speed: speed,
+        acceleration: acceleration,
+        sizex: sizex,
+        sizey: sizey,
+        sizez: sizez,
+        autoZOffset: autoZOffset,
+        autoBedLeveling: autoBedLeveling,
+        powerLossRecovery: powerLossRecovery,
+        filamentRunOutSensor: filamentRunOutSensor,
+        airPurifier: airPurifier,
+        inputShaping: inputShaping,
+        camera: camera,
+        wifi: wifi,
+        remoteAccess: remoteAccess,
+        touchscreen: touchscreen,
+        rating: rating
+    });
+    // addData("test", JSON.stringify(data));
 </script>
 <style>
   .spacer {
@@ -53,6 +83,9 @@
 
         <Label for="brand">Printer Brand</Label>
         <Input bind:value={brand} autocomplete="autocomplete_off_randString"  id="brand" placeholder="Prusa" />
+
+        <Label for="brand">Printer Price (usd)</Label>
+        <Input bind:value={price} autocomplete="autocomplete_off_randString"  id="brand" placeholder="600" />
 
         <Label for="type">Type</Label>
         <Select bind:value={type} id="type">
