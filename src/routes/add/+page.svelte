@@ -4,7 +4,37 @@
 
     import { test, addData } from "$lib/firebase"
     const handleSubmit = () => {
-        alert("Form submited.");
+        if (name != "" && brand != "" && price != "" && type != "" && link != "" && speed != "" && acceleration != "" && sizex != "" && sizey != "" && sizez != "") {
+            console.log("Submitting data");
+            submitData();
+        } else {
+            console.log("Please fill out all fields");
+        }
+        let data = [];
+        data.push({
+            name: name,
+            brand: brand,
+            price: price,
+            type: type,
+            link: link,
+            speed: speed,
+            acceleration: acceleration,
+            sizex: sizex,
+            sizey: sizey,
+            sizez: sizez,
+            autoZOffset: autoZOffset,
+            autoBedLeveling: autoBedLeveling,
+            powerLossRecovery: powerLossRecovery,
+            filamentRunOutSensor: filamentRunOutSensor,
+            airPurifier: airPurifier,
+            inputShaping: inputShaping,
+            camera: camera,
+            wifi: wifi,
+            remoteAccess: remoteAccess,
+            touchscreen: touchscreen,
+            rating: rating
+        });
+        addData("pending", JSON.stringify(data));
     };
     let rating = 2.5;
     let name = "";
@@ -45,30 +75,7 @@
     }
     // test();
     // condence data to JSON
-    let data = [];
-    data.push({
-        name: name,
-        brand: brand,
-        price: price,
-        type: type,
-        link: link,
-        speed: speed,
-        acceleration: acceleration,
-        sizex: sizex,
-        sizey: sizey,
-        sizez: sizez,
-        autoZOffset: autoZOffset,
-        autoBedLeveling: autoBedLeveling,
-        powerLossRecovery: powerLossRecovery,
-        filamentRunOutSensor: filamentRunOutSensor,
-        airPurifier: airPurifier,
-        inputShaping: inputShaping,
-        camera: camera,
-        wifi: wifi,
-        remoteAccess: remoteAccess,
-        touchscreen: touchscreen,
-        rating: rating
-    });
+
     // addData("test", JSON.stringify(data));
 </script>
 <style>
@@ -105,15 +112,15 @@
 
         <div style="display:inline-block">
             <Label for="type">Build Size X (cm)</Label>
-            <Input bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (cm)" />
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (cm)" />
         </div>
         <div style="display:inline-block">
             <Label for="type">Build Size Y (cm)</Label>
-            <Input bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (cm)" />
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (cm)" />
         </div>
         <div style="display:inline-block">
             <Label for="type">Build Size Z (cm)</Label>
-            <Input bind:value={sizez} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Z (cm)" />
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizez} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Z (cm)" />
         </div>
         <Label for="features">Features</Label>
         <div style="display:inline-block;border-right:1px solid gray;padding-right:15px">
