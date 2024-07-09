@@ -1,24 +1,35 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, addDoc, getDoc, query, where, getDocs } from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { profileImg, profileName } from '../stores.js';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-//   apiKey: import.meta.env.VITE_APIKEY,
-    apiKey: "REDACTED",
-    authDomain: "printerbenchv3.firebaseapp.com",
-    projectId: "printerbenchv3",
-    storageBucket: "printerbenchv3.appspot.com",
-    messagingSenderId: "355800794511",
-    appId: "1:355800794511:web:aafb975f30d6ffada9f7fa",
-    measurementId: "G-70RX08CJJV"
-};
-console.log("Firebase Configuration:", firebaseConfig);
-console.log("API Key:", firebaseConfig.apiKey);
-let app = initializeApp(firebaseConfig);
-let db = getFirestore(app);
+let firebaseConfig;
+async function setConfig() {
+    return firebaseConfig = {
+        apiKey: "redacted",
+        authDomain: "printerbenchv3.firebaseapp.com",
+        projectId: "printerbenchv3",
+        storageBucket: "printerbenchv3.appspot.com",
+        messagingSenderId: "355800794511",
+        appId: "1:355800794511:web:aafb975f30d6ffada9f7fa",
+        measurementId: "G-70RX08CJJV"
+    };
+}
+
+
+let app;
+if (!getApps().length) {
+    app = initializeApp(await setConfig());
+    console.log("Firebase initialized successfully");
+  } else {
+    app = getApps()[0];
+    console.log("Firebase app already initialized");
+  }
+
+let db = await getFirestore(app);
 export async function test() {
     // const ref = collection(db, "test");
     const docRef = doc(db, "test", "test");
@@ -34,12 +45,6 @@ export async function addData(collectionName, StringifiedData) {
     console.log(StringifiedData);
 }
 export async function getData(collectionName) {
-    // const docRef = doc(db, collectionName);
-    // const docSnap = await getDoc(docRef);
-    // console.log(docSnap.data())
-    // console.log(docSnap.data().StringifiedData)
-    // console.log(docSnap.data().StringifiedData[0]);
-    // return docSnap.data().StringifiedData[0];
     let data = [];
     const q = query(collection(db, collectionName));
     const querySnapshot = await getDocs(q);
@@ -48,8 +53,6 @@ export async function getData(collectionName) {
     });
     return data;
 }
-// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-
 export async function signIn() {
     try {
         console.log("ran");
@@ -64,9 +67,17 @@ export async function signIn() {
         const token = credential.accessToken;
         const user = result.user;
 
+        const displayName = user.displayName;
+        const email = user.email;
+        const photoURL = user.photoURL;
+        const uid = user.uid;
+
+        profileImg.set(photoURL);
+        profileName.set(displayName);
         console.log("User signed in:", user);
         console.log("Token:", token);
     } catch (error) {
+        alert("Error during sign-in. Check the console for more information.")
         console.error("Error during sign-in:", error);
 
         const errorCode = error.code;
@@ -79,4 +90,9 @@ export async function signIn() {
         console.log("Error email:", email);
         console.log("Credential from error:", credential);
     }
+}
+export async function signOut() {
+    const auth = getAuth();
+    await auth.signOut();
+    console.log("User signed out");
 }
