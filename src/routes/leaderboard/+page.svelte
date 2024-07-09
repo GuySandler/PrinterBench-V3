@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, Rating, AdvancedRating, ScoreRating, A, Card } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
 
@@ -56,33 +56,56 @@
                 </div>
             </button>
         {/each}
-        <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal} autoclose>
-            <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;border:1px black solid">
-                <Card style="width:155px;height:100px;display:inline-block">
-                    <P style="text-align:center" size="2xl">Price</P>
-                    <P style="text-align:center" size="lg">${GotData[modalNum][0].price}</P>
-                </Card>
-                <Card style="width:155px;height:100px;display:inline-block">
-                    <P style="text-align:center" size="2xl">Type</P>
-                    <P style="text-align:center" size="lg">{GotData[modalNum][0].type}</P>
-                </Card>
-                <Card style="width:155px;height:100px;display:inline-block">
-                    <P style="text-align:center" size="2xl">Speed</P>
-                    <P style="text-align:center" size="lg">{GotData[modalNum][0].speed}mm/s</P>
-                </Card>
-                <Card style="width:155px;height:100px;display:inline-block">
-                    <P style="text-align:center" size="2xl">Accel</P>
-                    <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
-                </Card>
-                <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);">
-                    <P style="text-align:center" size="2xl">Size (mm)</P>
-                    <P style="text-align:center" size="sm">{GotData[modalNum][0].sizex} x {GotData[modalNum][0].sizey} x {GotData[modalNum][0].sizez}</P>
-                </Card>
-                <Card style="width:155px;height:100px;display:inline-block">
-                    <P style="text-align:center" size="2xl">Accel</P>
-                    <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
-                </Card>
-            </div>
+        <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal}>
+            <Tabs>
+                <TabItem open title="Info" on:click={() => function(){}}>
+                    <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;border:1px black solid">
+                        <Card style="width:155px;height:100px;display:inline-block">
+                            <P style="text-align:center" size="2xl">Price</P>
+                            <P style="text-align:center" size="lg">${GotData[modalNum][0].price}</P>
+                        </Card>
+                        <Card style="width:155px;height:100px;display:inline-block">
+                            <P style="text-align:center" size="2xl">Type</P>
+                            <P style="text-align:center" size="lg">{GotData[modalNum][0].type}</P>
+                        </Card>
+                        <Card style="width:155px;height:100px;display:inline-block">
+                            <P style="text-align:center" size="2xl">Speed</P>
+                            <P style="text-align:center" size="lg">{GotData[modalNum][0].speed}mm/s</P>
+                        </Card>
+                        <Card style="width:155px;height:100px;display:inline-block">
+                            <P style="text-align:center" size="2xl">Accel</P>
+                            <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
+                        </Card>
+                        <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);">
+                            <P style="text-align:center" size="2xl">Size (mm)</P>
+                            <P style="text-align:center" size="sm">{GotData[modalNum][0].sizex} x {GotData[modalNum][0].sizey} x {GotData[modalNum][0].sizez}</P>
+                        </Card>
+                        <Card style="width:155px;height:100px;display:inline-block">
+                            <P style="text-align:center" size="2xl">Accel</P>
+                            <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
+                        </Card>
+                    </div>
+                </TabItem>
+                <TabItem title="Features">
+                    <Table>
+                        <TableHead>
+                            <TableHeadCell>Features</TableHeadCell>
+                        </TableHead>
+                        <TableBody>
+                                <TableBodyRow>{#if GotData[modalNum][0].autoZOffset}<TableBodyCell>autoZOffset</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].autoBedLeveling}<TableBodyCell>autoBedLeveling</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].powerLossRecovery}<TableBodyCell>powerLossRecovery</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].filamentRunOutSensor}<TableBodyCell>filamentRunOutSensor</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].airPurifier}<TableBodyCell>airPurifier</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].inputShaping}<TableBodyCell>inputShaping</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].camera}<TableBodyCell>camera</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].wifi}<TableBodyCell>wifi</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].remoteAccess}<TableBodyCell>remoteAccess</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData[modalNum][0].touchscreen}<TableBodyCell>touchscreen</TableBodyCell>{/if}</TableBodyRow>
+                        </TableBody>
+                    </Table>
+                </TabItem>
+            </Tabs>
             <svelte:fragment slot="footer">
                 <A href={"https://"+GotData[modalNum][0].link}>Shop</A>
                 <Button color="alternative">Close</Button>
