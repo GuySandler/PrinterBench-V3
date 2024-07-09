@@ -59,7 +59,7 @@
         <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal}>
             <Tabs>
                 <TabItem open title="Info" on:click={() => function(){}}>
-                    <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;border:1px black solid">
+                    <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;">
                         <Card style="width:155px;height:100px;display:inline-block">
                             <P style="text-align:center" size="2xl">Price</P>
                             <P style="text-align:center" size="lg">${GotData[modalNum][0].price}</P>
@@ -108,7 +108,7 @@
             </Tabs>
             <svelte:fragment slot="footer">
                 <A href={"https://"+GotData[modalNum][0].link}>Shop</A>
-                <Button color="alternative">Close</Button>
+                <Button color="alternative" on:click={() => modal = false}>Close</Button>
             </svelte:fragment>
         </Modal>
     {:catch error}
