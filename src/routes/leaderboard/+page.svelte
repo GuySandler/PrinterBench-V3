@@ -1,27 +1,15 @@
 <script lang="ts">
-    import { Spinner, P } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, Rating, AdvancedRating, ScoreRating, A, Card } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
+    import { goto } from '$app/navigation';
 
     import { getData } from "$lib/firebase"
-    let rating = 2.5;
 
-    let config = {
-        readOnly: false,
-        countStars: 7,
-        range: {min: 0, max: 7},
-        score: rating,
-        showScore: true,
-        scoreFormat: function(){ return `(${this.score.toFixed(0)}/${this.countStars})` },
-        starConfig: {
-            size: 500,
-            fillColor: '#FFFFFF',
-            strokeColor: "#FFFFFF",
-            unfilledColor: '#FFFFFF',
-            strokeUnfilledColor: '#FFFFFF'
-        }
-    }
+    let modal = false;
+    let modalNum = 0
     function LeaderBoardClick(number) {
-        console.log(number);
+        modalNum = number;
+        modal = true;
     }
 </script>
 <style>
@@ -47,7 +35,6 @@
         transition: all 0.3s;
     }
     .LeaderBoardElement:hover {
-        background-color: #f0f0f0;
         scale: 1.05;
         cursor: pointer;
     }
@@ -62,8 +49,45 @@
                     <P style="font-size:1vw">#{i+1}</P>
                 </div>
                 <P style="float:left;">{GotData[i][0].name}</P>
+                <div style="float:right;">
+                    <Rating total={5} rating={GotData[i][0].rating}>
+                        <P slot="text" class="ms-2 text-sm font-medium text-gray-500 dark:text-gray-400">{GotData[i][0].rating} / 5</P>
+                    </Rating>
+                </div>
             </button>
         {/each}
+        <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal} autoclose>
+            <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;border:1px black solid">
+                <Card style="width:155px;height:100px;display:inline-block">
+                    <P style="text-align:center" size="2xl">Price</P>
+                    <P style="text-align:center" size="lg">${GotData[modalNum][0].price}</P>
+                </Card>
+                <Card style="width:155px;height:100px;display:inline-block">
+                    <P style="text-align:center" size="2xl">Type</P>
+                    <P style="text-align:center" size="lg">{GotData[modalNum][0].type}</P>
+                </Card>
+                <Card style="width:155px;height:100px;display:inline-block">
+                    <P style="text-align:center" size="2xl">Speed</P>
+                    <P style="text-align:center" size="lg">{GotData[modalNum][0].speed}mm/s</P>
+                </Card>
+                <Card style="width:155px;height:100px;display:inline-block">
+                    <P style="text-align:center" size="2xl">Accel</P>
+                    <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
+                </Card>
+                <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);">
+                    <P style="text-align:center" size="2xl">Size (mm)</P>
+                    <P style="text-align:center" size="sm">{GotData[modalNum][0].sizex} x {GotData[modalNum][0].sizey} x {GotData[modalNum][0].sizez}</P>
+                </Card>
+                <Card style="width:155px;height:100px;display:inline-block">
+                    <P style="text-align:center" size="2xl">Accel</P>
+                    <P style="text-align:center" size="lg">{GotData[modalNum][0].acceleration}mm/s</P>
+                </Card>
+            </div>
+            <svelte:fragment slot="footer">
+                <A href={"https://"+GotData[modalNum][0].link}>Shop</A>
+                <Button color="alternative">Close</Button>
+            </svelte:fragment>
+        </Modal>
     {:catch error}
         <P style="color: red">{error.message}</P>
     {/await}

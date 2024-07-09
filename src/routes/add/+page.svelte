@@ -105,6 +105,7 @@
         <Label for="link">Printer Brand</Label>
         <Input bind:value={link} autocomplete="autocomplete_off_randString"  id="link" placeholder="https://www.prusa3d.com/product/original-prusa-mk4/" />
 
+        <!-- add unspesified option -->
         <Label for="brand">Speed (according to offical website in mm/s)</Label>
         <Input bind:value={speed} autocomplete="autocomplete_off_randString"  id="speed" placeholder="600" />
         <Label for="brand">Acceleration (according to offical website in mm/s)</Label>
