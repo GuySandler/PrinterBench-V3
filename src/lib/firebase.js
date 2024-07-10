@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, where, getDocs} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName } from '../stores.js';
 
@@ -9,7 +9,7 @@ import { profileImg, profileName } from '../stores.js';
 let firebaseConfig;
 async function setConfig() {
     return firebaseConfig = {
-        apiKey: "redacted",
+        apiKey: "AIzaSyB57AbhPyOO7VYJD7f-1l3lOTuRSkanJWE",
         authDomain: "printerbenchv3.firebaseapp.com",
         projectId: "printerbenchv3",
         storageBucket: "printerbenchv3.appspot.com",
@@ -27,7 +27,7 @@ if (!getApps().length) {
   } else {
     app = getApps()[0];
     console.log("Firebase app already initialized");
-  }
+}
 
 let db = await getFirestore(app);
 export async function test() {
@@ -50,6 +50,18 @@ export async function getData(collectionName) {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         data.push(doc.data().StringifiedData);
+    });
+    return data;
+}
+export async function getCollections(OuterCollectionName, type) {
+    const q = query(collection(db, OuterCollectionName));
+    let data = [];
+    const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            // console.log(doc)
+            // console.log(doc.id, " => ", doc.data());
+            if (type == "id") {data.push(doc.id);}
+            if (type == "data") {data.push(doc.data());}
     });
     return data;
 }

@@ -2,6 +2,7 @@
     import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode, Avatar, Dropdown, DropdownItem } from 'flowbite-svelte';
     import { signIn, signOut } from '$lib/firebase';
     import { profileImg } from '../stores.js';
+    import { redirect } from '@sveltejs/kit';
 
     let profileImage;
 
@@ -26,7 +27,7 @@
                 </div>
                 <Dropdown>
                     <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem on:click={() => function(){redirect(302, '/')}}>Settings</DropdownItem>
                     <DropdownItem on:click={signIn}>Log In</DropdownItem>
                     <DropdownItem on:click={signOut}>Sign out</DropdownItem>
                 </Dropdown>
