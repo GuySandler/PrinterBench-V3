@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 def elegoo():
-    URL = "https://us.elegoo.com/products/mars-5-ultra-9k-7inch-monochrome-lcd-resin-3d-printer"
+    # URL = "https://us.elegoo.com/products/mars-5-ultra-9k-7inch-monochrome-lcd-resin-3d-printer"
+    URL = "https://us.elegoo.com/products/saturn-4-12k-10inch-monochrome-lcd-resin-3d-printer"
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     results = soup.find(id="price-template--16955431747765__main-product")
