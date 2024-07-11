@@ -65,6 +65,23 @@ export async function getCollections(OuterCollectionName, type) {
     });
     return data;
 }
+export async function getSubCollection(OuterCollectionName, InnerCollectionName) {
+    const Ref1 = collection(db, OuterCollectionName);
+    const Ref2 = collection(Ref1, InnerCollectionName, "cases");
+    let data = [];
+    getDocs(Ref2)
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        // doc.data() contains the document data
+        console.log(doc.id, '=>', doc.data());
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+    return data;
+}
 export async function signIn() {
     try {
         console.log("ran");

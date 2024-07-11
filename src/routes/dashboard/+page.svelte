@@ -1,9 +1,11 @@
 <script>
     import { Button, P, Select, Spinner } from "flowbite-svelte";
-    import { getData, getCollections } from "$lib/firebase"
+    import { getSubCollection, getCollections } from "$lib/firebase"
 
     let GetDataOption = "";
     let GetDataType = "";
+    let PrinterSelect = "";
+    let PendingSelect = "";
 </script>
 <center>
     <div style="float:left;margin:20px;padding:20px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
@@ -24,14 +26,30 @@
             {#await getCollections(GetDataOption, GetDataType)}
                 <Spinner size={8} />
             {:then Data}
-                <P>Got Data</P>
-                <P>{Data}</P>
+                {#if GetDataOption == "approved"}
+                    <Select bind:value={PrinterSelect} style="width:25vw;margin-bottom:15px">
+                        {#each Data as item}
+                            <option value={item}>{item}</option>
+                        {/each}
+                    </Select>
+                    {#await getSubCollection("approved", PrinterSelect)}
+                        <Spinner size={8} />
+                    {:then SubData}
+                        <P>{Data}</P>
+                        <P>{SubData}</P>
+                    {/await}
+                {:else}
+                    <Select bind:value={PendingSelect} style="width:25vw;margin-bottom:15px">
+                        {#each Data as item, i}
+                            <option value={i}>{item}</option>
+                        {/each}
+                    </Select>
+                    <P>Got Data</P>
+                    <P>{Data[PendingSelect]}</P>
+                {/if}
                 <Button>Update</Button>
                 <Button>Move</Button>
                 <Button>Delete</Button>
-
-            <!-- {:catch}
-                <P>Failed to get data</P> -->
             {/await}
         </div>
     {/if}
