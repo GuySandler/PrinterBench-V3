@@ -7,23 +7,23 @@ crealityLinks = [
     "https://store.creality.com/products/ender-3-v3-corexz-3d-printer",
     "https://store.creality.com/products/ender-3-v3-se-3d-printer",
     "https://store.creality.com/products/ender-3-v3-ke-3d-printer",
-    "https://store.creality.com/products/ender-3-s1-3d-printer-aa7d",
-    "https://store.creality.com/products/ender-3-s1-plus-3d-printer",
-    "https://store.creality.com/products/ender-3-s1-pro-3d-printer",
+    # "https://store.creality.com/products/ender-3-s1-3d-printer-aa7d",
+    # "https://store.creality.com/products/ender-3-s1-plus-3d-printer",
+    # "https://store.creality.com/products/ender-3-s1-pro-3d-printer",
     "https://store.creality.com/products/ender-3-v2-neo-3d-printer",
     "https://store.creality.com/products/ender-3-max-neo-3d-printer",
     "https://store.creality.com/products/ender-3-v2-3d-printer",
     "https://store.creality.com/products/ender-3-neo-3d-printer",
-    "https://store.creality.com/products/cr-10-se-3d-printer",
+    # "https://store.creality.com/products/cr-10-se-3d-printer",
     "https://store.creality.com/products/cr-m4-3d-printer",
-    "https://store.creality.com/products/cr-10-smart-pro-3d-printer",
+    # "https://store.creality.com/products/cr-10-smart-pro-3d-printer",
     "https://store.creality.com/products/cr-30-3d-printer",
     "https://store.creality.com/products/cr-6-max-3d-printer",
     "https://store.creality.com/products/ender-5-s1-3d-printer",
     "https://store.creality.com/products/ender-5-plus-3d-printer",
     "https://store.creality.com/products/k1-max-3d-printer",
     "https://store.creality.com/products/k1c-3d-printer",
-    "https://store.creality.com/products/k1-3d-printer",
+    # "https://store.creality.com/products/k1-3d-printer",
     "https://store.creality.com/products/sermoon-d3-3d-printer",
     "https://store.creality.com/products/sermoon-d3-pro-3d-printer"
 ]
@@ -75,8 +75,9 @@ def prusa(): #Not scrappable (for now) due to random classes and id for each pro
     cleanPrice = ''.join(cleanPrice)
     print("price: " + cleanPrice)
     print("name: " + name)
-
 def Creality(URL): #done
+    # collapsable parameters (not done): K1,
+    # image parameters (WHYYYY): cr 10 smart pro, cr 10 se, ender s1 pro, ender s1 plus, ender s1
     # URL = "https://store.creality.com/products/ender-3-v3-plus-3d-printer?official-website-index-buy=&spm=..index.home_card_2_2024_1.1"
     scraper = cloudscraper.create_scraper()
     page = scraper.get(URL)
@@ -90,6 +91,25 @@ def Creality(URL): #done
     for char in price:
         if char.isdigit() or char == ".": cleanPrice.append(char)
     cleanPrice = ''.join(cleanPrice)
+    specs = soup.find("div", class_="param_wrap")
+    specsList = {}
+    if specs is None:
+        specs = soup.find("div", class_="parameters")
+        specs = specs.find_all("div", class_="parameter_item")
+        for spec in specs:
+            specCombined = spec.find("div", class_="title").text
+            print(specCombined)
+            # print(f"{specName}: {specData}")
+            # specsList.update({specName:specData})
+        print(specsList)
+    else:
+        specs = specs.find_all("div", class_="param_item")
+        for spec in specs:
+            specName = spec.find("span", class_="name").text
+            specData = spec.find("span", class_="value").text
+            # print(f"{specName}: {specData}")
+            specsList.update({specName:specData})
+        print(specsList)
     print("price: " + cleanPrice)
     print("name: " + name)
     print("-"*10)
@@ -130,7 +150,7 @@ def Sovol(URL): #works
 
 for printer in crealityLinks:
     Creality(printer)
-for printer in bambuLinks:
-    BambuLab(printer)
-for printer in sovolLinks:
-    Sovol(printer)
+# for printer in bambuLinks:
+#     BambuLab(printer)
+# for printer in sovolLinks:
+#     Sovol(printer)
