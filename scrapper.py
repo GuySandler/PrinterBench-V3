@@ -78,6 +78,7 @@ def prusa(): #Not scrappable (for now) due to random classes and id for each pro
 def Creality(URL): #done
     # collapsable parameters (not done): K1,
     # image parameters (WHYYYY): cr 10 smart pro, cr 10 se, ender s1 pro, ender s1 plus, ender s1
+    # why do they use ： (not :) for some of the parameters???!?!?
     # URL = "https://store.creality.com/products/ender-3-v3-plus-3d-printer?official-website-index-buy=&spm=..index.home_card_2_2024_1.1"
     scraper = cloudscraper.create_scraper()
     page = scraper.get(URL)
@@ -93,25 +94,37 @@ def Creality(URL): #done
     cleanPrice = ''.join(cleanPrice)
     specs = soup.find("div", class_="param_wrap")
     specsList = {}
+    print("price: " + cleanPrice)
+    print("name: " + name)
     if specs is None:
         specs = soup.find("div", class_="parameters")
         specs = specs.find_all("div", class_="parameter_item")
         for spec in specs:
-            specCombined = spec.find("div", class_="title").text
-            print(specCombined)
+            specCombined = spec.find("b", class_="title").text
+            if "：" not in specCombined:
+                specCombined = specCombined.split(":")
+            else:
+                specCombined = specCombined.split("：")
             # print(f"{specName}: {specData}")
-            # specsList.update({specName:specData})
+            # print(len(specCombined))
+            if (len(specCombined) == 1): print(specCombined)
+            specsList.update({specCombined[0].strip():specCombined[1].strip()})
         print(specsList)
     else:
         specs = specs.find_all("div", class_="param_item")
         for spec in specs:
-            specName = spec.find("span", class_="name").text
-            specData = spec.find("span", class_="value").text
-            # print(f"{specName}: {specData}")
-            specsList.update({specName:specData})
+            # if spec.find("span", class_="name") is None:
+            #     print("None error here")
+            # else:
+            #     print("fine")
+            try:
+                specName = spec.find("span", class_="name").text
+                specData = spec.find("span", class_="value").text
+                # print(f"{specName}: {specData}")
+                specsList.update({specName:specData})
+            except:
+                print("error")
         print(specsList)
-    print("price: " + cleanPrice)
-    print("name: " + name)
     print("-"*10)
 
 def BambuLab(URL): #works
@@ -127,6 +140,12 @@ def BambuLab(URL): #works
     for char in price:
         if char.isdigit() or char == ".": cleanPrice.append(char)
     cleanPrice = ''.join(cleanPrice)
+
+    specs = soup.find("table", class_="tpl-table")
+    print(type(specs))
+    if specs is None:
+        specs = soup.find("div", class_="TableWrapper")
+        print(type(specs))
     print("price: " + cleanPrice)
     print("name: " + name)
     print("-" * 10)
@@ -148,9 +167,9 @@ def Sovol(URL): #works
     print("name: " + name)
     print("-" * 10)
 
-for printer in crealityLinks:
-    Creality(printer)
-# for printer in bambuLinks:
-#     BambuLab(printer)
+# for printer in crealityLinks:
+#     Creality(printer)
+for printer in bambuLinks:
+    BambuLab(printer)
 # for printer in sovolLinks:
 #     Sovol(printer)
