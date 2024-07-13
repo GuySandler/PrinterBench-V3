@@ -129,6 +129,7 @@ def Creality(URL): #done
 
 def BambuLab(URL): #works
     # URL = "https://store.bambulab.com/collections/3d-printer/products/p1p"
+    # td class pct_td
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     # print(soup.prettify())
@@ -142,10 +143,36 @@ def BambuLab(URL): #works
     cleanPrice = ''.join(cleanPrice)
 
     specs = soup.find("table", class_="tpl-table")
-    print(type(specs))
+    # print(type(specs))
+    iteration = 0
+    specName = []
+    specData = []
+    NotSpec = ["Body", "Toolhead", "Heatbed", "Speed", "Supported Filament", "Sensors", "Physical Dimensions"]
     if specs is None:
-        specs = soup.find("div", class_="TableWrapper")
-        print(type(specs))
+        # print(soup.prettify())
+        specs = soup.find("table", class_="pct_tb")
+        # print(type(specs))
+        specTable = specs.find_all("td", "pct_td")
+        for spec in specTable:
+            if iteration % 2 == 0:
+                specName.append(spec.text)
+            else:
+                specData.append(spec.text)
+            iteration+=1
+        # print(specName)
+        # print(specData)
+    else:
+        specTable = specs.find_all("td")
+        for spec in specTable:
+            if spec.text not in NotSpec:
+                # print(spec.text)
+                if iteration % 2 == 0:
+                    specName.append(spec.text)
+                else:
+                    specData.append(spec.text)
+                iteration += 1
+    # print(type(specs))
+    print(specData)
     print("price: " + cleanPrice)
     print("name: " + name)
     print("-" * 10)
