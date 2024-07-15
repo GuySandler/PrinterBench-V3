@@ -3,13 +3,13 @@ import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName } from '../stores.js';
-
+import { PUBLIC_VITE_APIKEY } from '$env/static/public';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 let firebaseConfig;
 async function setConfig() {
     return firebaseConfig = {
-        apiKey: "AIzaSyB57AbhPyOO7VYJD7f-1l3lOTuRSkanJWE",
+        apiKey: PUBLIC_VITE_APIKEY,
         authDomain: "printerbenchv3.firebaseapp.com",
         projectId: "printerbenchv3",
         storageBucket: "printerbenchv3.appspot.com",

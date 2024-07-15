@@ -5,19 +5,20 @@
     import { test, addData } from "$lib/firebase"
     function CalculatePoints() {
         let points = 0;
-        if (autoZOffset) points += 30;
-        if (autoBedLeveling) points += 30;
-        if (powerLossRecovery) points += 30;
-        if (filamentRunOutSensor) points += 15;
-        if (airPurifier) points += 10;
-        if (inputShaping) points += 15;
-        if (camera) points += 10;
-        if (wifi) points += 10;
-        if (remoteAccess) points += 10;
-        if (touchscreen) points += 10;
+        if (autoZOffset) points += 20;
+        if (autoBedLeveling) points += 20;
+        if (powerLossRecovery) points += 20;
+        if (filamentRunOutSensor) points += 10;
+        if (airPurifier) points += 5;
+        if (inputShaping) points += 10;
+        if (camera) points += 5;
+        if (wifi) points += 5;
+        if (remoteAccess) points += 5;
+        if (touchscreen) points += 5;
         points += (1/Math.log(parseInt(speed)))*200
-        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.25)
-        return points;
+        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.35)
+        points += Math.round(parseInt(acceleration)/500)
+        return Math.round(points);
     }
     const handleSubmit = () => {
         if (name != "" && brand != "" && price != "" && type != "" && link != "" && speed != "" && acceleration != "" && sizex != "" && sizey != "" && sizez != "") {
@@ -44,12 +45,15 @@
                 wifi: wifi,
                 remoteAccess: remoteAccess,
                 touchscreen: touchscreen,
-                rating: rating
+                rating: rating,
+                multicolor: multicolor,
+                multicolorPrice: multicolorPrice,
+                points: CalculatePoints()
             });
             console.log(data);
-            console.log(JSON.parse(JSON.stringify(data)));
 
-            // addData("pending", JSON.stringify(data));
+            console.log(CalculatePoints())
+            addData("pending", JSON.stringify(data));
         } else {
             console.log("Please fill out all fields");
         }
@@ -77,6 +81,7 @@
     let touchscreen = false;
     let multicolor = false;
     let multicolorPrice = "";
+    let enclosure = false;
 
     let config = {
         readOnly: false,
@@ -168,9 +173,11 @@
             <Toggle bind:checked={remoteAccess}>Remote Access</Toggle>
             <div class="spacer" />
             <Toggle bind:checked={touchscreen}>Touchscreen</Toggle>
+            <div class="spacer" />
+            <Toggle bind:checked={enclosure}>Enclosure</Toggle>
         </div>
         {#if multicolor}
-            <Label for="brand">Multicolor Price</Label>
+            <Label for="brand">Multicolor Price (cheapest in usd)</Label>
             <Input bind:value={multicolorPrice} autocomplete="autocomplete_off_randString"  id="brand" placeholder="300" />
         {/if}
 
