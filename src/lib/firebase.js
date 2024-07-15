@@ -126,8 +126,8 @@ export async function signOut() {
     await auth.signOut();
     console.log("User signed out");
 }
-export async function DeleteDoc(collection, doc) {
-    await deleteDoc(doc(db, collection, doc));
+export async function DeleteDoc(collection, Doc) {
+    await deleteDoc(doc(db, collection, Doc));
 }
 export async function GetFilteredDocs(collection, filter) {
     const q = query(collection(db, collection), filter);
@@ -145,12 +145,19 @@ export async function GetDashboardDocs(dataOption) {
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.data().StringifiedData);
-            console.log(doc.id, " => ", doc.data());
         });
-        console.log(data);
         return data;
     }
     // if (dataOption == "approved") {
 
     // }
+}
+export async function GetDashboardDocsId() {
+    let data = [];
+    const q = query(collection(db, "pending"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        data.push(doc.id);
+    });
+    return data;
 }

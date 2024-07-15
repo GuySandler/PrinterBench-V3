@@ -1,6 +1,6 @@
 <script>
     import { Button, P, Select, Spinner } from "flowbite-svelte";
-    import { getSubCollection, getCollections, DeleteDoc, GetDashboardDocs} from "$lib/firebase"
+    import { getSubCollection, getCollections, DeleteDoc, GetDashboardDocs, GetDashboardDocsId} from "$lib/firebase"
 
     let GetDataOption = "";
     let GetDataType = "";
@@ -8,6 +8,11 @@
     let PendingSelect = "";
     function GetField(data, i) {
         return data[i][0];
+    }
+    function DeleteDocNew() {
+        GetDashboardDocsId().then(data =>
+            DeleteDoc("pending", data[parseInt(PendingSelect)])
+        )
     }
 </script>
 <center>
@@ -101,9 +106,9 @@
                         {/if}
                     {/if}
                 {/if}
-                <Button>Update</Button>
-                <Button>Move</Button>
-                <Button on:hover={DeleteDoc(GetDataOption, Data)}>Delete</Button>
+                <Button>Approve</Button>
+                <Button on:click={() => GetDashboardDocsId().then(data => console.log(data))}>Move</Button>
+                <Button on:click={() => DeleteDocNew()}>Delete</Button>
             {/await}
         </div>
     {/if}
