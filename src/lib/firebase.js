@@ -62,6 +62,7 @@ export async function getCollections(OuterCollectionName, type) {
             // console.log(doc.id, " => ", doc.data());
             if (type == "id") {data.push(doc.id);}
             if (type == "data") {data.push(doc.data());}
+            data.push({data: doc.data(), id: doc.id});
     });
     return data;
 }
@@ -136,4 +137,20 @@ export async function GetFilteredDocs(collection, filter) {
         data.push(doc.data().StringifiedData);
     });
     return data;
+}
+export async function GetDashboardDocs(dataOption) {
+    let data = [];
+    if (dataOption == "pending") {
+        const q = query(collection(db, "pending"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            data.push(doc.data().StringifiedData);
+            console.log(doc.id, " => ", doc.data());
+        });
+        console.log(data);
+        return data;
+    }
+    // if (dataOption == "approved") {
+
+    // }
 }

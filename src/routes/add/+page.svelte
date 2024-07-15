@@ -5,19 +5,20 @@
     import { test, addData } from "$lib/firebase"
     function CalculatePoints() {
         let points = 0;
-        if (autoZOffset) points += 20;
-        if (autoBedLeveling) points += 20;
+        if (autoZOffset) points += 30;
+        if (autoBedLeveling) points += 30;
         if (powerLossRecovery) points += 20;
         if (filamentRunOutSensor) points += 10;
-        if (airPurifier) points += 5;
+        if (airPurifier) points += 10;
         if (inputShaping) points += 10;
-        if (camera) points += 5;
-        if (wifi) points += 5;
-        if (remoteAccess) points += 5;
-        if (touchscreen) points += 5;
-        points += (1/Math.log(parseInt(speed)))*200
-        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.35)
-        points += Math.round(parseInt(acceleration)/500)
+        if (camera) points += 10;
+        if (wifi) points += 10;
+        if (remoteAccess) points += 10;
+        if (touchscreen) points += 10;
+        if (enclosure) points += 20;
+        points += (1/Math.log(parseInt(speed)))*210 // speed
+        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.35) // volume
+        points += Math.round(parseInt(acceleration)/500) // acceleration
         return Math.round(points);
     }
     const handleSubmit = () => {
@@ -46,6 +47,7 @@
                 remoteAccess: remoteAccess,
                 touchscreen: touchscreen,
                 rating: rating,
+                enclosure: enclosure,
                 multicolor: multicolor,
                 multicolorPrice: multicolorPrice,
                 points: CalculatePoints()
