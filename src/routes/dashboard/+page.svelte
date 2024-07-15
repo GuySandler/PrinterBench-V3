@@ -1,6 +1,6 @@
 <script>
     import { Button, P, Select, Spinner } from "flowbite-svelte";
-    import { getSubCollection, getCollections } from "$lib/firebase"
+    import { getSubCollection, getCollections, DeleteDoc } from "$lib/firebase"
 
     let GetDataOption = "";
     let GetDataType = "";
@@ -49,7 +49,7 @@
                 {/if}
                 <Button>Update</Button>
                 <Button>Move</Button>
-                <Button>Delete</Button>
+                <Button on:click={DeleteDoc(GetDataOption, Data)}>Delete</Button>
             {/await}
         </div>
     {/if}

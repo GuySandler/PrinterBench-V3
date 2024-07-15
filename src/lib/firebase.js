@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, where, getDocs} from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName } from '../stores.js';
 
@@ -124,4 +124,16 @@ export async function signOut() {
     const auth = getAuth();
     await auth.signOut();
     console.log("User signed out");
+}
+export async function DeleteDoc(collection, doc) {
+    await deleteDoc(doc(db, collection, doc));
+}
+export async function GetFilteredDocs(collection, filter) {
+    const q = query(collection(db, collection), filter);
+    let data = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        data.push(doc.data().StringifiedData);
+    });
+    return data;
 }

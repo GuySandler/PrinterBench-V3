@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
 
@@ -24,6 +24,10 @@
         { value: 'RemoteAccess', name: 'Remote Access' },
         { value: 'Touchscreen', name: 'Touchscreen' }
     ];
+    let type = "bedslinger"
+    let name = ""
+    let brand = ""
+    let sortBy = "points"
 </script>
 <style>
     .centerFlexBox {
@@ -31,6 +35,7 @@
         justify-content: center;
         align-items: center;
         align-content: center;
+        margin:10px
     }
     .LeaderBoardElement {
         width:50vw;
@@ -53,28 +58,30 @@
     }
 </style>
 <div class="w-9/12"><center>
-    <div style="width:100%;border:1px solid red" class="centerFlexBox">
+    <div style="width:100%;" class="centerFlexBox">
         <P style="">Filters</P>
     </div>
-    <div style="width:100%;border:1px solid red" class="centerFlexBox">
-        <Select style="width:15vw;">
-            <option value="pending">Bedslinger</option>
-            <option value="approved">CoreXY</option>
-            <option value="reviews">Delta</option>
+    <div style="width:100%;" class="centerFlexBox">
+        <Select style="width:15vw;" bind:value={type}>
+            <option value="bedslinger">Bedslinger</option>
+            <option value="corexy">CoreXY</option>
+            <option value="delta">Delta</option>
         </Select>
         <MultiSelect items={featureFilter} bind:value={featureFilterSelected} size="lg" />
+        <Input placeholder="Printer Name" style="width:15vw" bind:value={name} />
+        <Input placeholder="Brand" style="width:15vw" bind:value={brand} />
     </div>
-    <div style="width:100%;border:1px solid red" class="centerFlexBox">
+    <div style="width:100%;" class="centerFlexBox">
         <P style="">Rank By</P>
     </div>
-    <div style="width:100%;border:1px solid red" class="centerFlexBox">
-        <Select style="width:15vw;">
-            <option value="pending">Points</option>
-            <option value="approved">Speed</option>
-            <option value="reviews">Price</option>
+    <div style="width:100%;" class="centerFlexBox">
+        <Select style="width:15vw;" bind:value={sortBy}>
+            <option value="points">Points</option>
+            <option value="speed">Speed</option>
+            <option value="price">Price</option>
         </Select>
-        <MultiSelect items={featureFilter} bind:value={featureFilterSelected} size="lg" />
     </div>
+    <div class="centerFlexBox"><Button on:click{}>Filter</Button></div>
     {#await getData("pending")}
         <Spinner size={8} />
     {:then GotData}

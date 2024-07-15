@@ -3,38 +3,56 @@
     import StarRating from 'svelte-star-rating';
 
     import { test, addData } from "$lib/firebase"
+    function CalculatePoints() {
+        let points = 0;
+        if (autoZOffset) points += 30;
+        if (autoBedLeveling) points += 30;
+        if (powerLossRecovery) points += 30;
+        if (filamentRunOutSensor) points += 15;
+        if (airPurifier) points += 10;
+        if (inputShaping) points += 15;
+        if (camera) points += 10;
+        if (wifi) points += 10;
+        if (remoteAccess) points += 10;
+        if (touchscreen) points += 10;
+        points += (1/Math.log(parseInt(speed)))*200
+        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.25)
+        return points;
+    }
     const handleSubmit = () => {
         if (name != "" && brand != "" && price != "" && type != "" && link != "" && speed != "" && acceleration != "" && sizex != "" && sizey != "" && sizez != "") {
             console.log("Submitting data");
-            submitData();
+            let data = [];
+            data.push({
+                name: name,
+                brand: brand,
+                price: price,
+                type: type,
+                link: link,
+                speed: speed,
+                acceleration: acceleration,
+                sizex: sizex,
+                sizey: sizey,
+                sizez: sizez,
+                autoZOffset: autoZOffset,
+                autoBedLeveling: autoBedLeveling,
+                powerLossRecovery: powerLossRecovery,
+                filamentRunOutSensor: filamentRunOutSensor,
+                airPurifier: airPurifier,
+                inputShaping: inputShaping,
+                camera: camera,
+                wifi: wifi,
+                remoteAccess: remoteAccess,
+                touchscreen: touchscreen,
+                rating: rating
+            });
+            console.log(data);
+            console.log(JSON.parse(JSON.stringify(data)));
+
+            // addData("pending", JSON.stringify(data));
         } else {
             console.log("Please fill out all fields");
         }
-        let data = [];
-        data.push({
-            name: name,
-            brand: brand,
-            price: price,
-            type: type,
-            link: link,
-            speed: speed,
-            acceleration: acceleration,
-            sizex: sizex,
-            sizey: sizey,
-            sizez: sizez,
-            autoZOffset: autoZOffset,
-            autoBedLeveling: autoBedLeveling,
-            powerLossRecovery: powerLossRecovery,
-            filamentRunOutSensor: filamentRunOutSensor,
-            airPurifier: airPurifier,
-            inputShaping: inputShaping,
-            camera: camera,
-            wifi: wifi,
-            remoteAccess: remoteAccess,
-            touchscreen: touchscreen,
-            rating: rating
-        });
-        addData("pending", JSON.stringify(data));
     };
     let rating = 2.5;
     let name = "";
@@ -57,6 +75,8 @@
     let wifi = false;
     let remoteAccess = false;
     let touchscreen = false;
+    let multicolor = false;
+    let multicolorPrice = "";
 
     let config = {
         readOnly: false,
@@ -139,6 +159,8 @@
             <Toggle bind:checked={inputShaping}>Input Shaping</Toggle>
             <div class="spacer" />
             <Toggle bind:checked={camera}>Camera</Toggle>
+            <div class="spacer" />
+            <Toggle bind:checked={multicolor}>multicolor option</Toggle>
         </div>
         <div style="display:inline-block;margin-left:15px;">
             <Toggle bind:checked={wifi}>Wifi</Toggle>
@@ -147,6 +169,10 @@
             <div class="spacer" />
             <Toggle bind:checked={touchscreen}>Touchscreen</Toggle>
         </div>
+        {#if multicolor}
+            <Label for="brand">Multicolor Price</Label>
+            <Input bind:value={multicolorPrice} autocomplete="autocomplete_off_randString"  id="brand" placeholder="300" />
+        {/if}
 
         <Label for="brand">Overall Rating (0.00 - 5.00)</Label>
         <div style="display:inline-block">
