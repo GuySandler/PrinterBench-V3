@@ -66,9 +66,9 @@ export async function getCollections(OuterCollectionName, type) {
     });
     return data;
 }
-export async function getSubCollection(OuterCollectionName, InnerCollectionName) {
+export async function getSubCollection(OuterCollectionName, InnerCollectionName, ExtraInnerCollectionName) {
     const Ref1 = collection(db, OuterCollectionName);
-    const Ref2 = collection(Ref1, InnerCollectionName, "cases");
+    const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName);
     let data = [];
     getDocs(Ref2)
     .then((querySnapshot) => {
@@ -160,4 +160,17 @@ export async function GetDashboardDocsId() {
         data.push(doc.id);
     });
     return data;
+}
+export async function Approve(PendingData, data) {
+    // console.log(await getSubCollection(PendingData, "cases"));
+    const Ref1 = collection(db, "approved");
+    const Ref2 = collection(Ref1, data.name, "cases");
+    await addDoc(Ref2, data);
+    // addData("approved", PendingData);
+    // DeleteDoc("pending", PendingData.id);
+}
+export async function GetReviews(data) {
+    await getSubCollection("approved", data.name, "reviews").then((returned) => {
+        return returned;
+    });
 }
