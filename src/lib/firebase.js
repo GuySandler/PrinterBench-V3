@@ -70,16 +70,17 @@ export async function getSubCollection(OuterCollectionName, InnerCollectionName,
     const Ref1 = collection(db, OuterCollectionName);
     const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName);
     let data = [];
-    getDocs(Ref2)
-    .then((querySnapshot) => {
+    
+    try {
+        const querySnapshot = await getDocs(Ref2);
         querySnapshot.forEach((doc) => {
-        // doc.data() contains the document data
-        console.log(doc.id, '=>', doc.data());
+            // console.log(doc.id, '=>', doc.data());
+            data.push(doc.data());
         });
-    })
-    .catch((error) => {
+        // console.log(data);
+    } catch (error) {
         console.log("Error getting documents: ", error);
-    });
+    }
 
     return data;
 }
@@ -170,7 +171,13 @@ export async function Approve(PendingData, data) {
     // DeleteDoc("pending", PendingData.id);
 }
 export async function GetReviews(data) {
-    await getSubCollection("approved", data.name, "reviews").then((returned) => {
-        return returned;
-    });
+    let GotReviews;
+    GotReviews = await getSubCollection("approved", data.name, "reviews")
+    console.log(GotReviews);
+    return GotReviews;
+}
+export async function AddReview(data, review) {
+    const Ref1 = collection(db, "approved");
+    const Ref2 = collection(Ref1, data.name, "reviews");
+    await addDoc(Ref2, review);
 }

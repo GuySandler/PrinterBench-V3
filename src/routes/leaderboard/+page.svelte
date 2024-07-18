@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName } from '../../stores';
-    import { getData, GetReviews } from "$lib/firebase"
+    import { getData, GetReviews, AddReview } from "$lib/firebase"
 
     let userinfo = [1];
     // $: {
@@ -16,6 +16,7 @@
     //     });
     //     console.log("hi")
     // }
+    let test = true;
     let reviewsGot = []
     function reviews(data) {
         userinfo = [];
@@ -26,7 +27,9 @@
         profileImg.subscribe((value) => {
             userinfo.push(value);
         });
-        reviewsGot = GetReviews(data);
+        GetReviews(data).then(data => {
+            reviewsGot = data;
+        })
         // console.log("ran")
     }
 
@@ -178,22 +181,27 @@
                             <button on:click={() => GetReviews(GotData[modalNum][0])} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
                                 <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
                             </button>
+                            <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={test}></Modal>
                         {:else}
                             <P>Log In to Add a Review</P>
+                            <button on:click={() => AddReview(GotData[modalNum][0], {test: "Review Test"})}>Review Test</button>
                         {/if}
-                        <h1>{reviewsGot}</h1>
+                        <!-- <h1>{reviewsGot}</h1> -->
                         {#if reviewsGot.length == 0}
                             <P>No Reviews, Will You Be The First?</P>
                         {:else}
-                            <!-- {#each reviewsGot as review}
-                                <Card style="width:100%;margin-top:10px">
-                                    <P>{review[0].name}</P>
-                                    <StarRating rating={review[0].rating} total={5} />
-                                    <P>{review[0].review}</P>
+                            <P>got a review: {reviewsGot}</P>
+                            {#each reviewsGot as reviews}
+                                <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
+                                    <div style="float:left">
+                                        <Avatar size="sm" rounded />
+                                        <P size="sm" style="display:inline;">Person</P>
+                                    </div>
+                                    <P>{reviews.test}</P>
                                 </Card>
-                            {/each} -->
+                            {/each}
                         {/if}
-                            </center>
+                        </center>
                 </TabItem>
             </Tabs>
             <svelte:fragment slot="footer">
