@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName } from '../../stores';
@@ -16,7 +16,15 @@
     //     });
     //     console.log("hi")
     // }
-    let test = true;
+    let AddReviewModal = false;
+    function AddReviewModalFunc() {
+        AddReviewModal = !AddReviewModal;
+    }
+    async function AddReviewFunc(data) {
+        await AddReview(data, {review: review, rating: rating, name: userinfo[0], img: userinfo[1]});
+        AddReviewModal = false;
+        reviews(data)
+    }
     let reviewsGot = []
     function reviews(data) {
         userinfo = [];
@@ -56,6 +64,24 @@
     let name = ""
     let brand = ""
     let sortBy = "points"
+
+    let rating = 2.5;
+    let review = "";
+    let config = {
+        readOnly: false,
+        countStars: 7,
+        range: {min: 0, max: 7},
+        score: rating,
+        showScore: true,
+        scoreFormat: function(){ return `(${this.score.toFixed(0)}/${this.countStars})` },
+        starConfig: {
+            size: 500,
+            fillColor: '#FFFFFF',
+            strokeColor: "#FFFFFF",
+            unfilledColor: '#FFFFFF',
+            strokeUnfilledColor: '#FFFFFF'
+        }
+    }
 </script>
 <style>
     .centerFlexBox {
@@ -126,7 +152,7 @@
                 </div>
             </button>
         {/each}
-        <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal}>
+        <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={modal} size="lg">
             <Tabs>
                 <TabItem open title="Info" on:click={() => function(){}}>
                     <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;">
@@ -177,27 +203,38 @@
                 </TabItem>
                 <TabItem title="Reviews" on:click={() => reviews(GotData[modalNum][0])}>
                     <center>
-                        {#if userinfo[1] != ""}
-                            <button on:click={() => GetReviews(GotData[modalNum][0])} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
+                        <!-- {#if userinfo[1] != ""} -->
+                            <button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
                                 <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
                             </button>
-                            <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={test}></Modal>
-                        {:else}
+                            <Modal title={GotData[modalNum][0].name+" by "+GotData[modalNum][0].brand} bind:open={AddReviewModal}>
+                                <Label>Review (will show your google account name and profile picture)</Label>
+                                <Textarea placeholder="Review" bind:value={review} maxlength="750" rows="4" />
+                                <P size="xs">{review.length} / 750</P>
+                                <Label for="brand">Overall Rating (0.00 - 5.00)</Label>
+                                <div style="display:inline-block">
+                                    <StarRating config={config} rating={rating} />
+                                </div>
+                                <Range bind:value={rating} style="width:20vw;margin-right:10px;padding-right:10px" max={5} step={0.25} id="rating" />
+                                <P size="3xl" style="display:inline-flex;width:5vw">{rating}</P>
+                                <br>
+                                <Button on:click={() => AddReviewFunc(GotData[modalNum][0])}>Add Review</Button>
+                            </Modal>
+                        <!-- {:else} -->
                             <P>Log In to Add a Review</P>
                             <button on:click={() => AddReview(GotData[modalNum][0], {test: "Review Test"})}>Review Test</button>
-                        {/if}
+                        <!-- {/if} -->
                         <!-- <h1>{reviewsGot}</h1> -->
                         {#if reviewsGot.length == 0}
                             <P>No Reviews, Will You Be The First?</P>
                         {:else}
-                            <P>got a review: {reviewsGot}</P>
                             {#each reviewsGot as reviews}
                                 <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
-                                    <div style="float:left">
-                                        <Avatar size="sm" rounded />
-                                        <P size="sm" style="display:inline;">Person</P>
+                                    <div style="float:right;display:inline-block">
+                                        <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
+                                        <P size="sm" style="display:inline-block;">{reviews.name}</P>
                                     </div>
-                                    <P>{reviews.test}</P>
+                                    <P>{reviews.review}</P>
                                 </Card>
                             {/each}
                         {/if}
