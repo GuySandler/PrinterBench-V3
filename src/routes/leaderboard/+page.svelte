@@ -203,7 +203,7 @@
                 </TabItem>
                 <TabItem title="Reviews" on:click={() => reviews(GotData[modalNum][0])}>
                     <center>
-                        <!-- {#if userinfo[1] != ""} -->
+                        {#if userinfo[1] != ""}
                             <button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
                                 <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
                             </button>
@@ -220,11 +220,11 @@
                                 <br>
                                 <Button on:click={() => AddReviewFunc(GotData[modalNum][0])}>Add Review</Button>
                             </Modal>
-                        <!-- {:else} -->
+                        {:else}
                             <P>Log In to Add a Review</P>
-                            <button on:click={() => AddReview(GotData[modalNum][0], {test: "Review Test"})}>Review Test</button>
-                        <!-- {/if} -->
-                        <!-- <h1>{reviewsGot}</h1> -->
+                            <!-- <button on:click={() => AddReview(GotData[modalNum][0], {test: "Review Test"})}>Review Test</button> -->
+                        {/if}
+                        <div style="margin-top:15px;margin-bottom:15px" />
                         {#if reviewsGot.length == 0}
                             <P>No Reviews, Will You Be The First?</P>
                         {:else}
@@ -234,7 +234,7 @@
                                         <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
                                         <P size="sm" style="display:inline-block;">{reviews.name}</P>
                                     </div>
-                                    <P>{reviews.review}</P>
+                                    <P style="overflow-wrap: break-word;overflow-y:auto;">{reviews.review}</P>
                                 </Card>
                             {/each}
                         {/if}

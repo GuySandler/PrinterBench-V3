@@ -1,5 +1,5 @@
 <script>
-    import { Button, P, Select, Spinner } from "flowbite-svelte";
+    import { Avatar, Button, P, Select, Spinner } from "flowbite-svelte";
     import { getSubCollection, Approve, DeleteDoc, GetDashboardDocs, GetDashboardDocsId} from "$lib/firebase"
 
     let GetDataOption = "";
@@ -7,7 +7,8 @@
     let PrinterSelect = "";
     let PendingSelect = null;
     function GetField(data, i) {
-        return data[i][0];
+        console.log(data[i].brand);
+        // return data[i];
     }
     function DeleteDocNew() {
         GetDashboardDocsId().then(data =>
@@ -31,7 +32,7 @@
     </div>
     {#if GetDataOption != "" && GetDataType != ""}
         <div style="float:right;margin:20px;padding:20px;border-radius:5px;width:65vw;" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
-            {#await GetDashboardDocs(GetDataOption)}
+            {#await GetDashboardDocs(GetDataOption, "")}
                 <Spinner size={8} />
             {:then Data}
                 {#if GetDataOption == "approved"}
@@ -40,44 +41,52 @@
                             <option value={item}>{item}</option>
                         {/each}
                     </Select>
-                    {#await getSubCollection("approved", PrinterSelect)}
+                    {#await GetDashboardDocs(GetDataOption, PrinterSelect)}
                         <Spinner size={8} />
                     {:then SubData}
-                        <P>{Data}</P>
-                        <P>{SubData}</P>
+                        {#if GetDataOption == "approved"}
+                            <P>{GetField(SubData, GetDataType)}</P>
+                        {:else if PendingSelect == "reviews"}
+                            <P>{Data.name}</P>
+                            <Avatar src={Data.img} />
+                            <P>{Data.review}</P>
+                            <P>{Data.rating}</P>
+                        {/if}
                     {/await}
                 {:else}
+                <!-- <P>{Data[0].name}</P> -->
                     <Select bind:value={PendingSelect} style="width:25vw;margin-bottom:15px">
                         {#each Data as item, i}
-                            <option value={i}>{item[0].name}</option>
+                            <option value={i}>{item.name}</option>
                         {/each}
                     </Select>
-                    <!-- <h1>{PendingSelect}</h1> -->
+                    <!-- <h1>{Data[PendingSelect]}</h1> -->
+                    <!-- <button on:click={() => GetField(Data, PendingSelect)}>test</button> -->
                     {#if PendingSelect != null}
-                        <P>{GetField(Data, PendingSelect).brand}'s {GetField(Data, PendingSelect).name}</P>
-                        <P>{GetField(Data, PendingSelect).sizex} x {GetField(Data, PendingSelect).sizey} x {GetField(Data, PendingSelect).sizez}</P>
-                        <P>${GetField(Data, PendingSelect).price}</P>
-                        <P>{GetField(Data, PendingSelect).type}</P>
-                        <P>speed: {GetField(Data, PendingSelect).speed} mm/s, accel: {GetField(Data, PendingSelect).acceleration}</P>
+                        <P>{Data[PendingSelect].brand}'s {Data[PendingSelect].name}</P>
+                        <P>{Data[PendingSelect].sizex} x {Data[PendingSelect].sizey} x {Data[PendingSelect].sizez}</P>
+                        <P>${Data[PendingSelect].price}</P>
+                        <P>{Data[PendingSelect].type}</P>
+                        <P>speed: {Data[PendingSelect].speed} mm/s, accel: {Data[PendingSelect].acceleration}</P>
                         <P>Features</P>
-                        <P>airPurifier: {GetField(Data, PendingSelect).airPurifier}</P>
-                        <P>autoBedLeveling: {GetField(Data, PendingSelect).autoBedLeveling}</P>
-                        <P>autoZOffset: {GetField(Data, PendingSelect).autoZOffset}</P>
-                        <P>camera: {GetField(Data, PendingSelect).camera}</P>
-                        <P>enclosure: {GetField(Data, PendingSelect).enclosure}</P>
-                        <P>filamentRunOutSensor: {GetField(Data, PendingSelect).filamentRunOutSensor}</P>
-                        <P>inputShaping: {GetField(Data, PendingSelect).inputShaping}</P>
-                        <P>powerLossRecovery: {GetField(Data, PendingSelect).powerLossRecovery}</P>
-                        <P>remoteAccess: {GetField(Data, PendingSelect).remoteAccess}</P>
-                        <P>touchscreen: {GetField(Data, PendingSelect).touchscreen}</P>
-                        <P>wifi: {GetField(Data, PendingSelect).wifi}</P>
-                        <P>multicolor: {GetField(Data, PendingSelect).multicolor}</P>
-                        {#if GetField(Data, PendingSelect).multicolor}
-                            <P>multicolor Price: ${GetField(Data, PendingSelect).multicolorPrice}</P>
+                        <P>airPurifier: {Data[PendingSelect].airPurifier}</P>
+                        <P>autoBedLeveling: {Data[PendingSelect].autoBedLeveling}</P>
+                        <P>autoZOffset: {Data[PendingSelect].autoZOffset}</P>
+                        <P>camera: {Data[PendingSelect].camera}</P>
+                        <P>enclosure: {Data[PendingSelect].enclosure}</P>
+                        <P>filamentRunOutSensor: {Data[PendingSelect].filamentRunOutSensor}</P>
+                        <P>inputShaping: {Data[PendingSelect].inputShaping}</P>
+                        <P>powerLossRecovery: {Data[PendingSelect].powerLossRecovery}</P>
+                        <P>remoteAccess: {Data[PendingSelect].remoteAccess}</P>
+                        <P>touchscreen: {Data[PendingSelect].touchscreen}</P>
+                        <P>wifi: {Data[PendingSelect].wifi}</P>
+                        <P>multicolor: {Data[PendingSelect].multicolor}</P>
+                        {#if Data[PendingSelect].multicolor}
+                            <P>multicolor Price: ${Data[PendingSelect].multicolorPrice}</P>
                         {/if}
                     {/if}
                 {/if}
-                <Button on:click={() => Approve(GetField(Data, PendingSelect).name, GetField(Data, PendingSelect))}>Approve</Button>
+                <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
                 <Button on:click={() => DeleteDocNew()}>Delete</Button>
             {/await}
         </div>

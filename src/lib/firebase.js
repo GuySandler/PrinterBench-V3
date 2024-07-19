@@ -139,19 +139,24 @@ export async function GetFilteredDocs(collection, filter) {
     });
     return data;
 }
-export async function GetDashboardDocs(dataOption) {
+export async function GetDashboardDocs(dataOption, printer) {
     let data = [];
     if (dataOption == "pending") {
+        console.log("pending")
         const q = query(collection(db, "pending"));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.data().StringifiedData);
         });
-        return data;
+        console.log(data[0]);
+        return data[0];
     }
-    // if (dataOption == "approved") {
-
-    // }
+    else if (dataOption == "approved") {
+        return await getSubCollection("approved", printer, "cases");
+    }
+    else if (dataOption == "reviews") {
+        return await getSubCollection("approved", printer, "reviews");
+    }
 }
 export async function GetDashboardDocsId() {
     let data = [];
@@ -162,7 +167,7 @@ export async function GetDashboardDocsId() {
     });
     return data;
 }
-export async function Approve(PendingData, data) {
+export async function Approve(name, data) {
     // console.log(await getSubCollection(PendingData, "cases"));
     const Ref1 = collection(db, "approved");
     const Ref2 = collection(Ref1, data.name, "cases");
