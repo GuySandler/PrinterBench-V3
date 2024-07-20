@@ -67,8 +67,8 @@ export async function getCollections(OuterCollectionName, type) {
     return data;
 }
 export async function getSubCollection(OuterCollectionName, InnerCollectionName, ExtraInnerCollectionName) {
-    const Ref1 = collection(db, OuterCollectionName);
-    const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName);
+    const Ref1 = collection(db, OuterCollectionName); // "approved"
+    const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName); // "mk3s+, cases"
     let data = [];
     
     try {
@@ -82,6 +82,7 @@ export async function getSubCollection(OuterCollectionName, InnerCollectionName,
         console.log("Error getting documents: ", error);
     }
 
+    console.log(data);
     return data;
 }
 export async function signIn() {
@@ -152,15 +153,25 @@ export async function GetDashboardDocs(dataOption, printer) {
         return data[0];
     }
     else if (dataOption == "approved") {
-        return await getSubCollection("approved", printer, "cases");
+        // let test = await GetDashboardDocsId("approved")
+        // console.log(test);
+        // return test;
+        console.log("approved")
+        const q = query(collection(db, "approved"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            data.push(doc.id);
+        });
+        console.log(data);
+        return data;
     }
-    else if (dataOption == "reviews") {
-        return await getSubCollection("approved", printer, "reviews");
-    }
+    // else if (dataOption == "reviews") {
+    //     return await getSubCollection("approved", printer, "reviews");
+    // }
 }
-export async function GetDashboardDocsId() {
+export async function GetDashboardDocsId(name) {
     let data = [];
-    const q = query(collection(db, "pending"));
+    const q = query(collection(db, name));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         data.push(doc.id);
@@ -171,7 +182,7 @@ export async function Approve(name, data) {
     // console.log(await getSubCollection(PendingData, "cases"));
     const Ref1 = collection(db, "approved");
     const Ref2 = collection(Ref1, data.name, "cases");
-    await addDoc(Ref2, data);
+    await addDoc(Ref2, data); // fix nonexistant issue
     // addData("approved", PendingData);
     // DeleteDoc("pending", PendingData.id);
 }

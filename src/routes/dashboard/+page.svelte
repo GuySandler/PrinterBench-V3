@@ -30,6 +30,7 @@
             <option value="data">Data</option>
         </Select>
     </div>
+
     {#if GetDataOption != "" && GetDataType != ""}
         <div style="float:right;margin:20px;padding:20px;border-radius:5px;width:65vw;" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
             {#await GetDashboardDocs(GetDataOption, "")}
@@ -41,18 +42,35 @@
                             <option value={item}>{item}</option>
                         {/each}
                     </Select>
-                    {#await GetDashboardDocs(GetDataOption, PrinterSelect)}
-                        <Spinner size={8} />
-                    {:then SubData}
-                        {#if GetDataOption == "approved"}
-                            <P>{GetField(SubData, GetDataType)}</P>
-                        {:else if PendingSelect == "reviews"}
-                            <P>{Data.name}</P>
-                            <Avatar src={Data.img} />
-                            <P>{Data.review}</P>
-                            <P>{Data.rating}</P>
-                        {/if}
-                    {/await}
+                    {#if PrinterSelect != ""}
+                        {#await getSubCollection("approved", PrinterSelect, "cases")}
+                            <Spinner size={8} />
+                        {:then SubData}
+                            <P>{SubData[0].brand}'s {SubData[0].name}</P>
+                            <P>{SubData[0].sizex} x {SubData[0].sizey} x {SubData[0].sizez}</P>
+                            <P>${SubData[0].price}</P>
+                            <P>{SubData[0].type}</P>
+                            <P>speed: {SubData[0].speed} mm/s, accel: {SubData[0].acceleration}</P>
+                            <P>Features</P>
+                            <P>airPurifier: {SubData[0].airPurifier}</P>
+                            <P>autoBedLeveling: {SubData[0].autoBedLeveling}</P>
+                            <P>autoZOffset: {SubData[0].autoZOffset}</P>
+                            <P>camera: {SubData[0].camera}</P>
+                            <P>enclosure: {SubData[0].enclosure}</P>
+                            <P>filamentRunOutSensor: {SubData[0].filamentRunOutSensor}</P>
+                            <P>inputShaping: {SubData[0].inputShaping}</P>
+                            <P>powerLossRecovery: {SubData[0].powerLossRecovery}</P>
+                            <P>remoteAccess: {SubData[0].remoteAccess}</P>
+                            <P>touchscreen: {SubData[0].touchscreen}</P>
+                            <P>wifi: {SubData[0].wifi}</P>
+                            <P>multicolor: {SubData[0].multicolor}</P>
+                            {#if SubData[0].multicolor}
+                                <P>multicolor Price: ${SubData[0].multicolorPrice}</P>
+                            {/if}
+                            <!-- add a thing to go across cases -->
+                            <!-- <P>{SubData[0].brand}</P> -->
+                        {/await}
+                    {/if}
                 {:else}
                 <!-- <P>{Data[0].name}</P> -->
                     <Select bind:value={PendingSelect} style="width:25vw;margin-bottom:15px">
@@ -88,6 +106,8 @@
                 {/if}
                 <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
                 <Button on:click={() => DeleteDocNew()}>Delete</Button>
+            {:catch error}
+                <p style="color:red">{error.message}</p>
             {/await}
         </div>
     {/if}
