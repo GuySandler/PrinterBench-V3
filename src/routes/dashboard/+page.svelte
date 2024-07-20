@@ -3,18 +3,21 @@
     import { getSubCollection, Approve, DeleteDoc, GetDashboardDocs, GetDashboardDocsId} from "$lib/firebase"
 
     let GetDataOption = "";
-    let GetDataType = "";
+    // let GetDataType = "";
     let PrinterSelect = "";
     let PendingSelect = null;
-    function GetField(data, i) {
-        console.log(data[i].brand);
-        // return data[i];
-    }
-    function DeleteDocNew() {
-        GetDashboardDocsId().then(data =>
+    let InfoSelect = null;
+    // function GetField(data, i) {
+    //     console.log(data[i].brand);
+    //     // return data[i];
+    // }
+    function DeleteDocNew(PendingSelect) {
+        GetDashboardDocsId("pending").then(data =>
             DeleteDoc("pending", data[parseInt(PendingSelect)])
         )
+        RedoAwait = !RedoAwait;
     }
+    let RedoAwait = false;
 </script>
 <center>
     <div style="float:left;margin:20px;padding:20px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
@@ -24,51 +27,67 @@
             <option value="approved">Approved</option>
             <option value="reviews">Reviews</option>
         </Select>
-        <P>Data Type</P>
+        <!-- <P>Data Type</P>
         <Select bind:value={GetDataType} style="width:25vw;margin-bottom:15px">
             <option value="id">Id</option>
             <option value="data">Data</option>
-        </Select>
+        </Select> -->
     </div>
 
-    {#if GetDataOption != "" && GetDataType != ""}
+    <!-- {#if GetDataOption != "" && GetDataType != ""} -->
+    {#if GetDataOption != ""}
         <div style="float:right;margin:20px;padding:20px;border-radius:5px;width:65vw;" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
-            {#await GetDashboardDocs(GetDataOption, "")}
+            {#await GetDashboardDocs(GetDataOption, RedoAwait)}
                 <Spinner size={8} />
             {:then Data}
-                {#if GetDataOption == "approved"}
+                {#if GetDataOption == "approved" || GetDataOption == "reviews"}
+                    <P>Select Printer</P>
                     <Select bind:value={PrinterSelect} style="width:25vw;margin-bottom:15px">
                         {#each Data as item}
                             <option value={item}>{item}</option>
                         {/each}
                     </Select>
                     {#if PrinterSelect != ""}
-                        {#await getSubCollection("approved", PrinterSelect, "cases")}
+                        {#await getSubCollection("approved", PrinterSelect, ((GetDataOption == "approved") ? 'cases' : 'reviews'))}
                             <Spinner size={8} />
                         {:then SubData}
-                            <P>{SubData[0].brand}'s {SubData[0].name}</P>
-                            <P>{SubData[0].sizex} x {SubData[0].sizey} x {SubData[0].sizez}</P>
-                            <P>${SubData[0].price}</P>
-                            <P>{SubData[0].type}</P>
-                            <P>speed: {SubData[0].speed} mm/s, accel: {SubData[0].acceleration}</P>
-                            <P>Features</P>
-                            <P>airPurifier: {SubData[0].airPurifier}</P>
-                            <P>autoBedLeveling: {SubData[0].autoBedLeveling}</P>
-                            <P>autoZOffset: {SubData[0].autoZOffset}</P>
-                            <P>camera: {SubData[0].camera}</P>
-                            <P>enclosure: {SubData[0].enclosure}</P>
-                            <P>filamentRunOutSensor: {SubData[0].filamentRunOutSensor}</P>
-                            <P>inputShaping: {SubData[0].inputShaping}</P>
-                            <P>powerLossRecovery: {SubData[0].powerLossRecovery}</P>
-                            <P>remoteAccess: {SubData[0].remoteAccess}</P>
-                            <P>touchscreen: {SubData[0].touchscreen}</P>
-                            <P>wifi: {SubData[0].wifi}</P>
-                            <P>multicolor: {SubData[0].multicolor}</P>
-                            {#if SubData[0].multicolor}
-                                <P>multicolor Price: ${SubData[0].multicolorPrice}</P>
+                            <Select bind:value={InfoSelect} style="width:25vw;margin-bottom:15px">
+                                {#each SubData as item, i}
+                                    <option value={i}>{i}</option>
+                                {/each}
+                            </Select>
+                            {#if GetDataOption == "approved" && InfoSelect != null}
+                                <P>{SubData[InfoSelect].brand}'s {SubData[InfoSelect].name}</P>
+                                <P>{SubData[InfoSelect].sizex} x {SubData[InfoSelect].sizey} x {SubData[InfoSelect].sizez}</P>
+                                <P>${SubData[InfoSelect].price}</P>
+                                <P>{SubData[InfoSelect].type}</P>
+                                <P>speed: {SubData[InfoSelect].speed} mm/s, accel: {SubData[InfoSelect].acceleration}</P>
+                                <P>Features</P>
+                                <P>airPurifier: {SubData[InfoSelect].airPurifier}</P>
+                                <P>autoBedLeveling: {SubData[InfoSelect].autoBedLeveling}</P>
+                                <P>autoZOffset: {SubData[InfoSelect].autoZOffset}</P>
+                                <P>camera: {SubData[InfoSelect].camera}</P>
+                                <P>enclosure: {SubData[InfoSelect].enclosure}</P>
+                                <P>filamentRunOutSensor: {SubData[InfoSelect].filamentRunOutSensor}</P>
+                                <P>inputShaping: {SubData[InfoSelect].inputShaping}</P>
+                                <P>powerLossRecovery: {SubData[InfoSelect].powerLossRecovery}</P>
+                                <P>remoteAccess: {SubData[InfoSelect].remoteAccess}</P>
+                                <P>touchscreen: {SubData[InfoSelect].touchscreen}</P>
+                                <P>wifi: {SubData[InfoSelect].wifi}</P>
+                                <P>multicolor: {SubData[InfoSelect].multicolor}</P>
+                                {#if SubData[InfoSelect].multicolor}
+                                    <P>multicolor Price: ${SubData[InfoSelect].multicolorPrice}</P>
+                                {/if}
+                                {:else if GetDataOption == "reviews" && InfoSelect != null}
+                                    <P>{SubData[InfoSelect].name}</P>
+                                    <Avatar src={SubData[InfoSelect].img} alt={SubData[InfoSelect].name} />
+                                    <P style="overflow-wrap: break-word;overflow-y:auto;">{SubData[InfoSelect].review}</P>
                             {/if}
                             <!-- add a thing to go across cases -->
-                            <!-- <P>{SubData[0].brand}</P> -->
+                            <!-- <P>{SubData[InfoSelect].brand}</P> -->
+                        {:catch error}
+                            <P>Probobly None Found</P>
+                            <P>{error}</P>
                         {/await}
                     {/if}
                 {:else}
@@ -105,10 +124,12 @@
                     {/if}
                 {/if}
                 <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
-                <Button on:click={() => DeleteDocNew()}>Delete</Button>
+                <Button on:click={() => DeleteDocNew(PendingSelect)}>Delete</Button>
             {:catch error}
                 <p style="color:red">{error.message}</p>
             {/await}
+            <Button on:click={() => RedoAwait = !RedoAwait}>Refresh</Button>
+
         </div>
     {/if}
 </center>

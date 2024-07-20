@@ -138,21 +138,21 @@ export async function GetFilteredDocs(collection, filter) {
     querySnapshot.forEach((doc) => {
         data.push(doc.data().StringifiedData);
     });
+    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     return data;
 }
 export async function GetDashboardDocs(dataOption, printer) {
     let data = [];
     if (dataOption == "pending") {
-        console.log("pending")
         const q = query(collection(db, "pending"));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.data().StringifiedData);
         });
-        console.log(data[0]);
+        if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
         return data[0];
     }
-    else if (dataOption == "approved") {
+    else if (dataOption == "approved" || dataOption == "reviews") {
         // let test = await GetDashboardDocsId("approved")
         // console.log(test);
         // return test;
@@ -162,12 +162,9 @@ export async function GetDashboardDocs(dataOption, printer) {
         querySnapshot.forEach((doc) => {
             data.push(doc.id);
         });
-        console.log(data);
+        if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
         return data;
     }
-    // else if (dataOption == "reviews") {
-    //     return await getSubCollection("approved", printer, "reviews");
-    // }
 }
 export async function GetDashboardDocsId(name) {
     let data = [];
@@ -176,6 +173,7 @@ export async function GetDashboardDocsId(name) {
     querySnapshot.forEach((doc) => {
         data.push(doc.id);
     });
+    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     return data;
 }
 export async function Approve(name, data) {
