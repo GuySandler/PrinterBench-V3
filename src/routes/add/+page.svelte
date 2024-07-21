@@ -28,14 +28,14 @@
             data.push({
                 name: name,
                 brand: brand,
-                price: price,
+                price: Math.round(parseInt(price)),
                 type: type,
                 link: link,
-                speed: speed,
-                acceleration: acceleration,
-                sizex: sizex,
-                sizey: sizey,
-                sizez: sizez,
+                speed: Math.round(parseInt(speed)),
+                acceleration: Math.round(parseInt(acceleration)),
+                sizex: Math.round(parseInt(sizex)),
+                sizey: Math.round(parseInt(sizey)),
+                sizez: Math.round(parseInt(sizez)),
                 autoZOffset: autoZOffset,
                 autoBedLeveling: autoBedLeveling,
                 powerLossRecovery: powerLossRecovery,
@@ -46,10 +46,10 @@
                 wifi: wifi,
                 remoteAccess: remoteAccess,
                 touchscreen: touchscreen,
-                rating: rating,
+                rating: Math.round(parseInt(rating)),
                 enclosure: enclosure,
                 multicolor: multicolor,
-                multicolorPrice: multicolorPrice,
+                multicolorPrice: Math.round(parseInt(multicolorPrice)),
                 points: CalculatePoints()
             });
             console.log(data);

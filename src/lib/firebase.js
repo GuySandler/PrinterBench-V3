@@ -23,10 +23,10 @@ async function setConfig() {
 let app;
 if (!getApps().length) {
     app = initializeApp(await setConfig());
-    console.log("Firebase initialized successfully");
+    // console.log("Firebase initialized successfully");
   } else {
     app = getApps()[0];
-    console.log("Firebase app already initialized");
+    // console.log("Firebase app already initialized");
 }
 
 let db = await getFirestore(app);
@@ -35,14 +35,14 @@ export async function test() {
     const docRef = doc(db, "test", "test");
     const docSnap = await getDoc(docRef);
 
-    console.log(docSnap.data());
+    // console.log(docSnap.data());
 }
 export async function addData(collectionName, StringifiedData) {
     StringifiedData = JSON.parse(StringifiedData)
     const docRef = await addDoc(collection(db, collectionName), {
         StringifiedData
     });
-    console.log(StringifiedData);
+    // console.log(StringifiedData);
 }
 export async function getData(collectionName) {
     let data = [];
@@ -51,7 +51,7 @@ export async function getData(collectionName) {
     querySnapshot.forEach((doc) => {
         data.push(doc.data().StringifiedData);
     });
-    console.log(data);
+    // console.log(data);
     if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     return data;
 }
@@ -84,18 +84,18 @@ export async function getSubCollection(OuterCollectionName, InnerCollectionName,
         console.log("Error getting documents: ", error);
     }
 
-    console.log(data);
+    // console.log(data);
     return data;
 }
 export async function signIn() {
     try {
-        console.log("ran");
+        // console.log("ran");
         const provider = new GoogleAuthProvider();
-        console.log("got provider");
+        // console.log("got provider");
         const auth = getAuth();
-        console.log("got auth");
+        // console.log("got auth");
         const result = await signInWithPopup(auth, provider);
-        console.log("signInWithPopup success");
+        // console.log("signInWithPopup success");
 
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
@@ -108,8 +108,8 @@ export async function signIn() {
 
         profileImg.set(photoURL);
         profileName.set(displayName);
-        console.log("User signed in:", user);
-        console.log("Token:", token);
+        // console.log("User signed in:", user);
+        // console.log("Token:", token);
     } catch (error) {
         alert("Error during sign-in. Check the console for more information.")
         console.error("Error during sign-in:", error);
@@ -119,16 +119,16 @@ export async function signIn() {
         const email = error.customData?.email; // Optional chaining in case customData is undefined
         const credential = GoogleAuthProvider.credentialFromError(error);
 
-        console.log("Error code:", errorCode);
-        console.log("Error message:", errorMessage);
-        console.log("Error email:", email);
-        console.log("Credential from error:", credential);
+        // console.log("Error code:", errorCode);
+        // console.log("Error message:", errorMessage);
+        // console.log("Error email:", email);
+        // console.log("Credential from error:", credential);
     }
 }
 export async function signOut() {
     const auth = getAuth();
     await auth.signOut();
-    console.log("User signed out");
+    // console.log("User signed out");
 }
 export async function DeleteDoc(collection, Doc) {
     await deleteDoc(doc(db, collection, Doc));
@@ -158,7 +158,7 @@ export async function GetDashboardDocs(dataOption, printer) {
         // let test = await GetDashboardDocsId("approved")
         // console.log(test);
         // return test;
-        console.log("approved")
+        // console.log("approved")
         const q = query(collection(db, "approved"));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -189,7 +189,7 @@ export async function Approve(name, data) {
 export async function GetReviews(data) {
     let GotReviews;
     GotReviews = await getSubCollection("approved", data.name, "reviews")
-    console.log(GotReviews);
+    // console.log(GotReviews);
     return GotReviews;
 }
 export async function AddReview(data, review) {
@@ -197,8 +197,9 @@ export async function AddReview(data, review) {
     const Ref2 = collection(Ref1, data.name, "reviews");
     await addDoc(Ref2, review);
 }
-export async function GetLeaderboard(order = "name", printer = "",) {
+export async function GetLeaderboard(order, printer = "",) {
     let data = [];
+    let returnData = []
     let tempdata = [];
     if (printer!="") {
         data = await getSubCollection("approved", printer, "cases")
@@ -216,11 +217,21 @@ export async function GetLeaderboard(order = "name", printer = "",) {
         return data[0];
     }
     else {
-        const q = query(collection(db, "approved"), orderBy(order), limit(10));
+        const q = query(collection(db, "approved"));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.id);
         });
-        return data;
+        // console.log(data);
+        for (let i = 0; i < data.length; i++) {
+            returnData.push(await getSubCollection("approved", data[i], "cases"));
+        }
+        // console.log(returnData);
+        // if (order == "name") returnData.sort();
+        if (order == "speed") returnData.flat().sort((a, b) => b.speed - a.speed).map(num => [[num]]);
+        if (order == "points") console.log("points");returnData.flat().sort((a, b) => b.points - a.points).map(num => [[num]]);
+        if (order == "price") returnData.flat().sort((a, b) => b.price - a.price).map(num => [[num]]);
+        console.log(returnData);
+        return returnData;
     }
 }

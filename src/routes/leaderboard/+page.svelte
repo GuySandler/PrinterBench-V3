@@ -141,11 +141,11 @@
         <Spinner size={8} />
     {:then GotData}
         {#each GotData as item, i}
-            <button on:click={() => LeaderBoardClick(item)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
+            <button on:click={() => LeaderBoardClick(item[0].name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
                 <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
                     <P style="font-size:1vw">#{i+1}</P>
                 </div>
-                <P style="float:left;">{item}</P>
+                <P style="float:left;">{item[0].name}</P>
                 <!-- <div style="float:right;">
                     <Rating total={5} rating={GotData}>
                         <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
@@ -183,6 +183,10 @@
                             <Card style="width:155px;height:100px;display:inline-block">
                                 <P style="text-align:center" size="2xl">Accel</P>
                                 <P style="text-align:center" size="lg">{GotData.acceleration}mm/s</P>
+                            </Card>
+                            <Card style="width:155px;height:100px;display:inline-block">
+                                <P style="text-align:center" size="2xl">Points</P>
+                                <P style="text-align:center" size="lg">{GotData.points}</P>
                             </Card>
                         </div>
                     </TabItem>
