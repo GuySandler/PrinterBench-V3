@@ -197,7 +197,7 @@ export async function AddReview(data, review) {
     const Ref2 = collection(Ref1, data.name, "reviews");
     await addDoc(Ref2, review);
 }
-export async function GetLeaderboard(order, printer = "",) {
+export async function GetLeaderboard(order, printer = "", type = "all", features = []) {
     let data = [];
     let returnData = []
     let tempdata = [];
@@ -223,15 +223,28 @@ export async function GetLeaderboard(order, printer = "",) {
             data.push(doc.id);
         });
         // console.log(data);
+        // console.log(type);
+        console.log(features != []);
+        console.log(features);
         for (let i = 0; i < data.length; i++) {
-            returnData.push(await getSubCollection("approved", data[i], "cases"));
-        }
+            const subCollectionData = await getSubCollection("approved", data[i], "cases");
+          
+            let filteredData = type !== "all" ? subCollectionData.filter(item => item.type === type) : subCollectionData;
+          
+            if (features.length !== 0) {
+              filteredData = filteredData.filter(item => features.some(feature => item[feature] === true));
+            }
+          
+            returnData.push(...filteredData);
+          }
         // console.log(returnData);
-        // if (order == "name") returnData.sort();
-        if (order == "speed") returnData.flat().sort((a, b) => b.speed - a.speed).map(num => [[num]]);
-        if (order == "points") console.log("points");returnData.flat().sort((a, b) => b.points - a.points).map(num => [[num]]);
-        if (order == "price") returnData.flat().sort((a, b) => b.price - a.price).map(num => [[num]]);
-        console.log(returnData);
+        if (order == "name") returnData.sort();
+        // console.log(order)
+        else if  (order == "speed") returnData.sort((a, b) => b[0].speed - a[0].speed);
+        else if (order == "points") returnData.sort((a, b) => b[0].points - a[0].points);
+        else if (order == "price") returnData.sort((a, b) => b[0].price - a[0].price);
+        // console.log(returnData.length);
+        // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
         return returnData;
     }
 }

@@ -49,7 +49,7 @@
     }
     let featureFilterSelected = [];
     let featureFilter = [
-        { value: 'AutoZOffset', name: 'Auto Z Offset' },
+        { value: 'autoZOffset', name: 'Auto Z Offset' },
         { value: 'AutoBedLeveling', name: 'Auto Bed Leveling' },
         { value: 'PowerLossRecovery', name: 'Power Loss Recovery' },
         { value: 'FilamentSensor', name: 'Filament Run-out Sensor' },
@@ -60,7 +60,7 @@
         { value: 'RemoteAccess', name: 'Remote Access' },
         { value: 'Touchscreen', name: 'Touchscreen' }
     ];
-    let type = "bedslinger"
+    let type = "all"
     let name = ""
     let brand = ""
     let sortBy = "name"
@@ -81,6 +81,9 @@
             unfilledColor: '#FFFFFF',
             strokeUnfilledColor: '#FFFFFF'
         }
+    }
+    function test(features) {
+        console.log(features.length);
     }
 </script>
 <style>
@@ -111,12 +114,14 @@
         cursor: pointer;
     }
 </style>
+<P>{featureFilterSelected}</P>
 <div class="w-9/12"><center>
     <div style="width:100%;" class="centerFlexBox">
         <P style="">Filters</P>
     </div>
     <div style="width:100%;" class="centerFlexBox">
         <Select style="width:15vw;" bind:value={type}>
+            <option value="all">All</option>
             <option value="bedslinger">Bedslinger</option>
             <option value="corexy">CoreXY</option>
             <option value="delta">Delta</option>
@@ -136,16 +141,16 @@
             <option value="price">Price</option>
         </Select>
     </div>
-    <div class="centerFlexBox"><Button on:click{}>Filter</Button></div>
-    {#await GetLeaderboard(sortBy, "")}
+    <!-- <Button on:click={() => test(featureFilterSelected)}>Filter</Button> -->
+    {#await GetLeaderboard(sortBy, "", type, featureFilterSelected)}
         <Spinner size={8} />
     {:then GotData}
         {#each GotData as item, i}
-            <button on:click={() => LeaderBoardClick(item[0].name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
+            <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
                 <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
                     <P style="font-size:1vw">#{i+1}</P>
                 </div>
-                <P style="float:left;">{item[0].name}</P>
+                <P style="float:left;">{item.name}</P>
                 <!-- <div style="float:right;">
                     <Rating total={5} rating={GotData}>
                         <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
