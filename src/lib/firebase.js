@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs} from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, orderBy, limit} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
@@ -51,6 +51,8 @@ export async function getData(collectionName) {
     querySnapshot.forEach((doc) => {
         data.push(doc.data().StringifiedData);
     });
+    console.log(data);
+    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     return data;
 }
 export async function getCollections(OuterCollectionName, type) {
@@ -194,4 +196,31 @@ export async function AddReview(data, review) {
     const Ref1 = collection(db, "approved");
     const Ref2 = collection(Ref1, data.name, "reviews");
     await addDoc(Ref2, review);
+}
+export async function GetLeaderboard(order = "name", printer = "",) {
+    let data = [];
+    let tempdata = [];
+    if (printer!="") {
+        data = await getSubCollection("approved", printer, "cases")
+        if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
+        else if (data.length == 1) {return data[0];}
+        else {
+            for (let i = 0; i < data.length; i++) {
+                tempdata = [];
+                tempdata.push(data[i].rating);
+            }
+            // for (let i = 0; i < tempdata.length; i++) {
+            data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
+            // }
+        }
+        return data[0];
+    }
+    else {
+        const q = query(collection(db, "approved"), orderBy(order), limit(10));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            data.push(doc.id);
+        });
+        return data;
+    }
 }
