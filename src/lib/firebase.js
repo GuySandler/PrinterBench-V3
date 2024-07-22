@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, orderBy, limit} from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
@@ -70,19 +70,22 @@ export async function getCollections(OuterCollectionName, type) {
 }
 export async function getSubCollection(OuterCollectionName, InnerCollectionName, ExtraInnerCollectionName) {
     const Ref1 = collection(db, OuterCollectionName); // "approved"
-    const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName); // "mk3s+, cases"
+    // const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName); // "mk3s+, cases"
+    const Ref2 = doc(Ref1, InnerCollectionName);
+    const Ref3 = collection(Ref2, ExtraInnerCollectionName);
     let data = [];
-    
+
     try {
-        const querySnapshot = await getDocs(Ref2);
+        const querySnapshot = await getDocs(Ref3); // this is the problem
         querySnapshot.forEach((doc) => {
-            // console.log(doc.id, '=>', doc.data());
             data.push(doc.data());
         });
-        // console.log(data);
+        // const doc = await getDoc(Ref2); // this is the problem
+        // console.log(doc.data());
     } catch (error) {
         console.log("Error getting documents: ", error);
     }
+    // error is triggered here ^^^
 
     // console.log(data);
     return data;
@@ -110,6 +113,9 @@ export async function signIn() {
         profileName.set(displayName);
         // console.log("User signed in:", user);
         // console.log("Token:", token);
+        await setDoc(doc(db, "users", uid), {
+            favorites: ["Mk3s+"],
+        });
     } catch (error) {
         alert("Error during sign-in. Check the console for more information.")
         console.error("Error during sign-in:", error);
@@ -218,19 +224,21 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
     let tempdata = [];
     if (printer!="") {
         data = await getSubCollection("approved", printer, "cases")
-        if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
-        else if (data.length == 1) {return data[0];}
-        else {
-            for (let i = 0; i < data.length; i++) {
-                tempdata = [];
-                tempdata.push(data[i].rating);
-            }
-            // for (let i = 0; i < tempdata.length; i++) {
-            data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
-            // }
-        }
-        return data[0];
+        // bug here ^^^
+        // if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
+        // else if (data.length == 1) {return data[0];}
+        // else {
+        //     for (let i = 0; i < data.length; i++) {
+        //         tempdata = [];
+        //         tempdata.push(data[i].rating);
+        //     }
+        //     // for (let i = 0; i < tempdata.length; i++) {
+        //     data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
+        //     // }
+        // }
+        // return data[0];
     }
+    // bug above this ^^^
     else {
         const q = query(collection(db, "approved"));
         const querySnapshot = await getDocs(q);
@@ -272,4 +280,16 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
         // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
         return returnData;
     }
+}
+
+// export async function userRulesTest() {
+//     const approvedColRef = collection(db, "approved");
+//     const querySnapshot = await getDocs(approvedColRef);
+
+//     querySnapshot.forEach((doc) => {
+//         console.log(doc.id);
+//     });
+// }
+export async function GetUserFavs() {
+    console.log(profileName)
 }

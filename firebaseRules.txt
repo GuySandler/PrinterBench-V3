@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Rules for the users collection
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Rules for the pending collection
+    match /pending/{documentId} {
+      allow read, write: if true;
+    }
+
+    // Rules for the approved collection
+    match /approved/{documentId} {
+      allow read: if true;
+      allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+      
+      // Rules for the subcollections under approved documents
+      match /cases/{cases} {
+        allow read: if true;
+        allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+      }
+      match /reviews/{reviews} {
+        allow read: if true;
+        allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+      }
+    }
+  }
+}
