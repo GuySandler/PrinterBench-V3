@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Label, Input, Button, Select, Toggle, Range, P } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
+    import { Confetti } from "svelte-confetti"
 
     import { test, addData } from "$lib/firebase"
     function CalculatePoints() {
@@ -104,12 +105,21 @@
     // condence data to JSON
 
     // addData("test", JSON.stringify(data));
+    let done = true;
 </script>
 <style>
   .spacer {
     height: 10px;
   }
+  .centerFlexBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        margin:10px
+    }
 </style>
+{#if !done}
 <div class="w-9/12">
     <form>
         <Label for="name">Printer Name</Label>
@@ -194,3 +204,20 @@
         <Button type="submit" on:click={handleSubmit}>Submit</Button>
     </form>
 </div>
+{/if}
+{#if done}
+<div style="
+    position: fixed;
+    top: -50px;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;">
+        <Confetti x={[-5, 5]} y={[0, 0.2]} delay={[0, 0]} infinite duration=5000 amount=300 fallDistance="100vh" />
+</div>
+    <P>Thank you for submitting!</P>
+    <P>Your submittion is under review and will be added soon</P>
+{/if}

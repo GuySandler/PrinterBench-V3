@@ -114,21 +114,21 @@
         cursor: pointer;
     }
 </style>
-<P>{featureFilterSelected}</P>
+<!-- <P>{featureFilterSelected}</P> -->
 <div class="w-9/12"><center>
     <div style="width:100%;" class="centerFlexBox">
         <P style="">Filters</P>
     </div>
     <div style="width:100%;" class="centerFlexBox">
-        <Select style="width:15vw;" bind:value={type}>
+        <Select style="width:15vw;margin:5px;" bind:value={type}>
             <option value="all">All</option>
             <option value="bedslinger">Bedslinger</option>
             <option value="corexy">CoreXY</option>
             <option value="delta">Delta</option>
         </Select>
         <MultiSelect items={featureFilter} bind:value={featureFilterSelected} size="lg" />
-        <Input placeholder="Printer Name" style="width:15vw" bind:value={name} />
-        <Input placeholder="Brand" style="width:15vw" bind:value={brand} />
+        <Input placeholder="Printer Name" style="width:15vw;margin:5px;" bind:value={name} />
+        <Input placeholder="Brand" style="width:15vw;margin:7px;" bind:value={brand} />
     </div>
     <div style="width:100%;" class="centerFlexBox">
         <P style="">Rank By</P>
@@ -142,7 +142,7 @@
         </Select>
     </div>
     <!-- <Button on:click={() => test(featureFilterSelected)}>Filter</Button> -->
-    {#await GetLeaderboard(sortBy, "", type, featureFilterSelected)}
+    {#await GetLeaderboard(sortBy, "", type, featureFilterSelected, name, brand)}
         <Spinner size={8} />
     {:then GotData}
         {#each GotData as item, i}
