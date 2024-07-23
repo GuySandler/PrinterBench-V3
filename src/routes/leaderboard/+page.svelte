@@ -3,7 +3,7 @@
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs } from '../../stores';
-    import { GetLeaderboard, GetReviews, AddReview, GetDashboardDocsId } from "$lib/firebase"
+    import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs } from "$lib/firebase"
     import { onMount } from 'svelte';
 
     let userinfo = [];
@@ -96,20 +96,33 @@
         console.log(features.length);
     }
     let isFav = Array(50).fill(false);
-    let Favs = [];
+    // let favs = [];
     profileFavs.subscribe((value) => {
-        Favs = value;
+        favs = value;
     });
-    async function AddToFav(name, i) {
+    async function AddToFav(name, i, favs) {
         isFav[i] = !isFav[i];
-        if (!Favs.includes(name) && isFav[i]) {
-            Favs.push(name);
+        if (favs == undefined) {
+            favs = [];
         }
-        else if (Favs.includes(name) && !isFav[i]) {
-            Favs = Favs.filter(item => item !== name);
+        if (favs.includes(name)) {
+            isFav[i] = false;
+            favs = favs.filter(item => item !== name);
         }
-        console.log(Favs);
-        profileFavs.set(Favs);
+        else if (!favs.includes(name)) {
+            isFav[i] = true;
+            favs.push(name);
+
+        }
+        else if (!favs.includes(name) && isFav[i]) {
+            favs.push(name);
+        }
+        else if (favs.includes(name) && !isFav[i]) {
+            favs = favs.filter(item => item !== name);
+        }
+        console.log(favs);
+        profileFavs.set(favs);
+        SetFavs(Favs);
     }
     // console.log(userinfo[1] != undefined)
 </script>
@@ -190,28 +203,72 @@
     {#await GetLeaderboard(sortBy, "", type, featureFilterSelected, name, brand)}
         <Spinner size={8} />
     {:then GotData}
-        {#each GotData as item, i}
-            <div>
-                <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
-                    <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
-                        <P style="font-size:1vw">#{i+1}</P>
-                    </div>
-                    <P style="float:left;">{item.name}</P>
-                    <!-- <div style="float:right;">
-                        <Rating total={5} rating={GotData}>
-                            <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
-                        </Rating>
-                    </div> -->
-                </button>
-                {#if userinfo[1] != undefined}
-                <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i)}>
-                    <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                    </svg>
-                </button>
-                {/if}
-            </div>
-        {/each}
+        {#if userinfo[1] != undefined}
+        {#await GetUserFavs()}
+            <Spinner size={8} />
+        {:then Favs}
+            {#each GotData as item, i}
+                <div>
+                    <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
+                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                            <P style="font-size:1vw">#{i+1}</P>
+                        </div>
+                        <P style="float:left;">{item.name}</P>
+                        <!-- <div style="float:right;">
+                            <Rating total={5} rating={GotData}>
+                                <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
+                            </Rating>
+                        </div> -->
+                    </button>
+                    {#if userinfo[1] != undefined}
+                    <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i, Favs)}>
+                        {#if !Favs.includes(item.name)}
+                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                            </svg>
+                        {:else}
+                            <P>hi</P>
+                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'fav' : 'favOn'}>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                            </svg>
+                        {/if}
+                    </button>
+                    {/if}
+                </div>
+            {/each}
+        {/await}
+
+        {:else}
+            {#each GotData as item, i}
+                <div>
+                    <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
+                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                            <P style="font-size:1vw">#{i+1}</P>
+                        </div>
+                        <P style="float:left;">{item.name}</P>
+                        <!-- <div style="float:right;">
+                            <Rating total={5} rating={GotData}>
+                                <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
+                            </Rating>
+                        </div> -->
+                    </button>
+                    {#if userinfo[1] != undefined}
+                    <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i, Favs)}>
+                        {#if !Favs.includes(item.name)}
+                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                            </svg>
+                        {:else}
+                            <P>hi</P>
+                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'fav' : 'favOn'}>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                            </svg>
+                        {/if}
+                    </button>
+                    {/if}
+                </div>
+            {/each}
+        {/if}
         {#await GetLeaderboard("", modalNum)}
             <Spinner size={8} />
         {:then GotData}

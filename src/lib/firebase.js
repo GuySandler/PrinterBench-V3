@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { profileImg, profileName, profileFavs } from '../stores.js';
+import { profileImg, profileName, profileUid, profileFavs, } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -129,6 +129,7 @@ export async function signIn() {
         profileImg.set(photoURL);
         profileName.set(displayName);
         profileFavs.set(UserFavs);
+        profileUid.set(uid);
         // console.log("User signed in:", user);
         // console.log("Token:", token);
     } catch (error) {
@@ -307,6 +308,24 @@ let profileFavorites = [];
 profileFavs.subscribe((value) => {
     profileFavorites = value;
 });
+let profileUID = "";
+profileUid.subscribe((value) => {
+    profileUID = value;
+});
 export async function GetUserFavs() {
-    console.log(profileFavorites)
+    const UserDocRef = doc(db, "users", profileUID);
+    const UserDocSnap = await getDoc(UserDocRef);
+    if (UserDocSnap.exists()) {
+        console.log(UserDocSnap.data().favorites);
+        return UserDocSnap.data().favorites;
+    } else {
+        console.log("Failed to Get favorites");
+        return [];
+    }
+}
+export async function SetFavs(Favs) {
+    const UserDocRef = doc(db, "users", profileUID);
+    await setDoc(UserDocRef, {
+        favorites: Favs,
+    });
 }
