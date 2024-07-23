@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { profileImg, profileName } from '../stores.js';
+import { profileImg, profileName, profileFavs } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -109,13 +109,28 @@ export async function signIn() {
         const photoURL = user.photoURL;
         const uid = user.uid;
 
+
+        const UserDocRef = doc(db, "users", uid);
+        const UserDocSnap = await getDoc(UserDocRef);
+
+        let UserFavs;
+        if (UserDocSnap.exists()) {
+            console.log("User already exists");
+            console.log("User doc data:", UserDocSnap.data().favorites);
+            UserFavs = UserDocSnap.data().favorites;
+        } else {
+            await setDoc(doc(db, "users", uid), {
+                favorites: [],
+            });
+            console.log("User doc made");
+            UserFavs = [];
+        }
+
         profileImg.set(photoURL);
         profileName.set(displayName);
+        profileFavs.set(UserFavs);
         // console.log("User signed in:", user);
         // console.log("Token:", token);
-        await setDoc(doc(db, "users", uid), {
-            favorites: ["Mk3s+"],
-        });
     } catch (error) {
         alert("Error during sign-in. Check the console for more information.")
         console.error("Error during sign-in:", error);
@@ -224,21 +239,19 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
     let tempdata = [];
     if (printer!="") {
         data = await getSubCollection("approved", printer, "cases")
-        // bug here ^^^
-        // if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
-        // else if (data.length == 1) {return data[0];}
-        // else {
-        //     for (let i = 0; i < data.length; i++) {
-        //         tempdata = [];
-        //         tempdata.push(data[i].rating);
-        //     }
-        //     // for (let i = 0; i < tempdata.length; i++) {
-        //     data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
-        //     // }
-        // }
-        // return data[0];
+        if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
+        else if (data.length == 1) {return data[0];}
+        else {
+            for (let i = 0; i < data.length; i++) {
+                tempdata = [];
+                tempdata.push(data[i].rating);
+            }
+            // for (let i = 0; i < tempdata.length; i++) {
+            data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
+            // }
+        }
+        return data[0];
     }
-    // bug above this ^^^
     else {
         const q = query(collection(db, "approved"));
         const querySnapshot = await getDocs(q);
@@ -290,6 +303,10 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
 //         console.log(doc.id);
 //     });
 // }
+let profileFavorites = [];
+profileFavs.subscribe((value) => {
+    profileFavorites = value;
+});
 export async function GetUserFavs() {
-    console.log(profileName)
+    console.log(profileFavorites)
 }

@@ -2,10 +2,11 @@
     import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
-    import { profileImg, profileName } from '../../stores';
-    import { GetLeaderboard, GetReviews, AddReview } from "$lib/firebase"
+    import { profileImg, profileName, profileFavs } from '../../stores';
+    import { GetLeaderboard, GetReviews, AddReview, GetDashboardDocsId } from "$lib/firebase"
+    import { onMount } from 'svelte';
 
-    let userinfo = [1];
+    let userinfo = [];
     // $: {
     //     userinfo = [];
     //     profileName.subscribe((value) => {
@@ -30,16 +31,25 @@
         userinfo = [];
         reviewsGot = []
         profileName.subscribe((value) => {
-            userinfo.push(value);
+            if (value != "") userinfo.push(value);
         });
         profileImg.subscribe((value) => {
-            userinfo.push(value);
+            if (value != "") userinfo.push(value);
         });
         GetReviews(data).then(data => {
             reviewsGot = data;
         })
         // console.log("ran")
     }
+    onMount(() => { // somewhat helps the problem
+        userinfo = [];
+        profileName.subscribe((value) => {
+            if (value != "") userinfo.push(value);
+        });
+        profileImg.subscribe((value) => {
+            if (value != "") userinfo.push(value);
+        });
+    });
 
     let modal = false;
     let modalNum = 0
@@ -85,6 +95,23 @@
     function test(features) {
         console.log(features.length);
     }
+    let isFav = Array(50).fill(false);
+    let Favs = [];
+    profileFavs.subscribe((value) => {
+        Favs = value;
+    });
+    async function AddToFav(name, i) {
+        isFav[i] = !isFav[i];
+        if (!Favs.includes(name) && isFav[i]) {
+            Favs.push(name);
+        }
+        else if (Favs.includes(name) && !isFav[i]) {
+            Favs = Favs.filter(item => item !== name);
+        }
+        console.log(Favs);
+        profileFavs.set(Favs);
+    }
+    // console.log(userinfo[1] != undefined)
 </script>
 <style>
     .centerFlexBox {
@@ -112,6 +139,24 @@
     .LeaderBoardElement:hover {
         scale: 1.05;
         cursor: pointer;
+    }
+    #fav:hover {
+        fill:red;
+        scale:1.1
+    }
+    #fav:active, #favOn:active {
+        scale: 0.95;
+        transition: all 0.3s;
+    }
+    #fav {
+        fill:none;
+        z-index:4;
+        transition: all 0.3s;
+    }
+    #favOn {
+        fill:red;
+        z-index:4;
+        transition: all 0.3s;
     }
 </style>
 <!-- <P>{featureFilterSelected}</P> -->
@@ -146,17 +191,26 @@
         <Spinner size={8} />
     {:then GotData}
         {#each GotData as item, i}
-            <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
-                <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
-                    <P style="font-size:1vw">#{i+1}</P>
-                </div>
-                <P style="float:left;">{item.name}</P>
-                <!-- <div style="float:right;">
-                    <Rating total={5} rating={GotData}>
-                        <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
-                    </Rating>
-                </div> -->
-            </button>
+            <div>
+                <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
+                    <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                        <P style="font-size:1vw">#{i+1}</P>
+                    </div>
+                    <P style="float:left;">{item.name}</P>
+                    <!-- <div style="float:right;">
+                        <Rating total={5} rating={GotData}>
+                            <P slot="text" class="ms-2 text-sm font-medium text-black dark:text-white">{GotData} / 5</P>
+                        </Rating>
+                    </div> -->
+                </button>
+                {#if userinfo[1] != undefined}
+                <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i)}>
+                    <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                    </svg>
+                </button>
+                {/if}
+            </div>
         {/each}
         {#await GetLeaderboard("", modalNum)}
             <Spinner size={8} />
@@ -216,7 +270,7 @@
                     </TabItem>
                     <TabItem title="Reviews" on:click={() => reviews(GotData)}>
                         <center>
-                            {#if userinfo[1] != ""}
+                            {#if userinfo[1] != undefined}
                                 <button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
                                     <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
                                 </button>
