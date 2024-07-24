@@ -38,6 +38,7 @@
             <NavUl class="order-1">
                 <NavLi href="/leaderboard">LeaderBoard</NavLi>
                 <NavLi href="/add">Add Printer</NavLi>
+                <NavLi href="/compare">Compare</NavLi>
                 {#if profileImage != ""}<NavLi href="/profile">My Profile</NavLi>{/if}
             </NavUl>
         </NavContainer>
