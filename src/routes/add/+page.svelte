@@ -105,7 +105,7 @@
     // condence data to JSON
 
     // addData("test", JSON.stringify(data));
-    let done = true;
+    let done = false;
 </script>
 <style>
   .spacer {

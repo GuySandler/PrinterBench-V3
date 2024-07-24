@@ -9,6 +9,8 @@
 	profileImg.subscribe((value) => {
 		profileImage = value;
 	});
+    let update = false;
+    $: update = !update;
 </script>
 <div>
     <Navbar let:NavContainer>
@@ -29,14 +31,14 @@
                     <DropdownItem>Dashboard</DropdownItem>
                     <DropdownItem on:click={() => function(){redirect(302, '/')}}>Settings</DropdownItem>
                     <DropdownItem on:click={signIn}>Log In</DropdownItem>
-                    <DropdownItem on:click={signOut}>Sign out</DropdownItem>
+                    {#if profileImage != ""}<DropdownItem on:click={signOut}>Sign out</DropdownItem>{/if}
                 </Dropdown>
                 <NavHamburger />
             </div>
             <NavUl class="order-1">
                 <NavLi href="/leaderboard">LeaderBoard</NavLi>
                 <NavLi href="/add">Add Printer</NavLi>
-                <NavLi href="/profile">My Profile</NavLi>
+                {#if profileImage != ""}<NavLi href="/profile">My Profile</NavLi>{/if}
             </NavUl>
         </NavContainer>
     </Navbar>

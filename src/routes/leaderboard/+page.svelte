@@ -2,7 +2,7 @@
     import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
-    import { profileImg, profileName, profileFavs } from '../../stores';
+    import { profileImg, profileName, profileFavs } from "../../stores";
     import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs } from "$lib/firebase"
     import { onMount } from 'svelte';
 
@@ -95,36 +95,71 @@
     function test(features) {
         console.log(features.length);
     }
-    let isFav = Array(50).fill(false);
-    // let favs = [];
+    let isFav = Array(30).fill("fav");
+    let favs = [];
     profileFavs.subscribe((value) => {
         favs = value;
     });
-    async function AddToFav(name, i, favs) {
-        isFav[i] = !isFav[i];
-        if (favs == undefined) {
-            favs = [];
-        }
-        if (favs.includes(name)) {
-            isFav[i] = false;
-            favs = favs.filter(item => item !== name);
-        }
-        else if (!favs.includes(name)) {
-            isFav[i] = true;
-            favs.push(name);
+    // async function AddToFav(name, i, favs) {
+    //     isFav[i] = !isFav[i];
+    //     if (favs == undefined) {
+    //         favs = [];
+    //     }
+    //     if (favs.includes(name)) {
+    //         isFav[i] = false;
+    //         favs = favs.filter(item => item !== name);
+    //     }
+    //     else if (!favs.includes(name)) {
+    //         isFav[i] = true;
+    //         favs.push(name);
 
+    //     }
+    //     else if (!favs.includes(name) && isFav[i]) {
+    //         favs.push(name);
+    //     }
+    //     else if (favs.includes(name) && !isFav[i]) {
+    //         favs = favs.filter(item => item !== name);
+    //     }
+    //     console.log(favs);
+    //     profileFavs.set(favs);
+    //     SetFavs(Favs);
+    // }
+    let updater = false;
+    async function AddToFav(name) {
+        favs = await GetUserFavs()
+        if (favs.includes(name)) {
+            favs = favs.filter(item => item !== name); // if includes take out
         }
-        else if (!favs.includes(name) && isFav[i]) {
+        else {
             favs.push(name);
         }
-        else if (favs.includes(name) && !isFav[i]) {
-            favs = favs.filter(item => item !== name);
-        }
-        console.log(favs);
-        profileFavs.set(favs);
-        SetFavs(Favs);
+        await SetFavs(favs);
+        updater = !updater;
     }
     // console.log(userinfo[1] != undefined)
+    // async function isFav(name) {
+    $: {
+        if (favs != undefined) {
+            let favs = [];
+            async function func(){favs = await GetUserFavs()}func
+            let printers = [];
+            async function func2(){printers = await GetLeaderboard(sortBy, "", type, featureFilterSelected, name, brand);console.log(printers)}func2
+
+            // console.log(printers)
+            for (i of printers) {
+                console.log(i.name)
+            }
+            // console.log(favs.includes(name) ? 'favOn' : 'fav');
+
+            for (let i = 0; i < 50; i++) {
+                if (favs.includes(name)) {isFav[i] = 'favOn'};
+                if (favs.includes(name)) {isFav[i] = 'fav'};
+            }
+            console.log(isFav);
+            
+        }
+    }
+    // }
 </script>
 <style>
     .centerFlexBox {
@@ -221,17 +256,10 @@
                         </div> -->
                     </button>
                     {#if userinfo[1] != undefined}
-                    <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i, Favs)}>
-                        {#if !Favs.includes(item.name)}
-                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                            </svg>
-                        {:else}
-                            <P>hi</P>
-                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'fav' : 'favOn'}>
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                            </svg>
-                        {/if}
+                    <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name)}>
+                        <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i]}>
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                        </svg>
                     </button>
                     {/if}
                 </div>
@@ -252,20 +280,6 @@
                             </Rating>
                         </div> -->
                     </button>
-                    {#if userinfo[1] != undefined}
-                    <button style="display:inline-block;margin-left:10px" id="fav" on:click={() => AddToFav(item.name, i, Favs)}>
-                        {#if !Favs.includes(item.name)}
-                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'favOn' : 'fav'}>
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                            </svg>
-                        {:else}
-                            <P>hi</P>
-                            <svg class="w-15 h-15 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" id={isFav[i] ? 'fav' : 'favOn'}>
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                            </svg>
-                        {/if}
-                    </button>
-                    {/if}
                 </div>
             {/each}
         {/if}

@@ -292,6 +292,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
             returnData = returnData.filter(printer => printer.brand.toLowerCase().includes(brand.toLowerCase()));
         }
         // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
+        console.log(returnData);
         return returnData;
     }
 }
@@ -316,7 +317,7 @@ export async function GetUserFavs() {
     const UserDocRef = doc(db, "users", profileUID);
     const UserDocSnap = await getDoc(UserDocRef);
     if (UserDocSnap.exists()) {
-        console.log(UserDocSnap.data().favorites);
+        // console.log(UserDocSnap.data().favorites);
         return UserDocSnap.data().favorites;
     } else {
         console.log("Failed to Get favorites");
