@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { profileImg, profileName, profileUid, profileFavs, } from '../stores.js';
+import { profileImg, profileName, profileUid, profileFavs, profileImportant } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -131,6 +131,7 @@ export async function signIn() {
         profileName.set(displayName);
         profileFavs.set(UserFavs);
         profileUid.set(uid);
+        profileImportant.set(await isImportant())
         // console.log("User signed in:", user);
         // console.log("Token:", token);
     } catch (error) {
@@ -214,11 +215,7 @@ export async function GetReviews(data) {
     GotReviews = await getSubCollection("approved", data.name, "reviews")
     console.log(GotReviews);
     // important first
-    GotReviews.sort((a, b) => {
-        const aImportant = a.review.includes("isImportant") ? 1 : 0;
-        const bImportant = b.review.includes("isImportant") ? 1 : 0;
-        return bImportant - aImportant;
-    });
+    GotReviews.sort((a, b) => b.isImportant - a.isImportant);
     console.log(GotReviews);
     return GotReviews;
 }

@@ -1,6 +1,6 @@
 <script>
   import { P, Card } from "flowbite-svelte";
-    import { userRulesTest } from "$lib/firebase";
+    // import { userRulesTest } from "$lib/firebase";
 
 </script>
 <div>
@@ -22,4 +22,4 @@
         <P align="center">Look for your Printer and Add a Review</P>
     </Card>
 </div>
-<button on:click={userRulesTest}>test</button>
+<!-- <button on:click={userRulesTest}>test</button> -->
