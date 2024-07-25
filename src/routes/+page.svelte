@@ -1,10 +1,11 @@
 <script>
-  import { P, Card } from "flowbite-svelte";
+    import { P, Card } from "flowbite-svelte";
     // import { userRulesTest } from "$lib/firebase";
+    import logo from '$lib/images/printerbench.svg';
 
 </script>
 <div>
-    <img src="../images/printerbench.svg" style="display:inline-block; width:10vw; height:10vw" alt="PrinterBench Logo"/>
+    <img src={logo} style="display:inline-block; width:10vw; height:10vw" alt="PrinterBench Logo"/>
     <P size="5xl" style="display:inline-block;" align="center">PrinterBench</P>
 
     <P align="center" size="2xl">Making picking a printer easy</P>
