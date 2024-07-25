@@ -21,15 +21,19 @@ async function setConfig() {
 
 
 let app;
-if (!getApps().length) {
-    app = initializeApp(await setConfig());
-    // console.log("Firebase initialized successfully");
-  } else {
-    app = getApps()[0];
-    // console.log("Firebase app already initialized");
+async function initializeFirebase() {
+    if (!getApps().length) {
+      app = initializeApp(await setConfig());
+      // console.log("Firebase initialized successfully");
+    } else {
+        app = getApps()[0];
+    }
+    db = await getFirestore(app);
 }
 
-let db = await getFirestore(app);
+initializeFirebase();
+
+// let db = await getFirestore(app);
 export async function test() {
     // const ref = collection(db, "test");
     const docRef = doc(db, "test", "test");
