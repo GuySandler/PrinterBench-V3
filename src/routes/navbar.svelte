@@ -28,8 +28,8 @@
                     </svg>
                 </div>
                 <Dropdown>
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem on:click={() => function(){redirect(302, '/')}}>Settings</DropdownItem>
+                    <!-- <DropdownItem>Dashboard</DropdownItem> -->
+                    <!-- <DropdownItem on:click={() => function(){redirect(302, '/')}}>Settings</DropdownItem> -->
                     <DropdownItem on:click={signIn}>Log In</DropdownItem>
                     {#if profileImage != ""}<DropdownItem on:click={signOut}>Sign out</DropdownItem>{/if}
                 </Dropdown>

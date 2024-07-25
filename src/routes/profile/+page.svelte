@@ -1,7 +1,7 @@
 <script>
-    import { P, Card, Spinner, Modal, Tabs, TabItem, TableHeadCell, TableHead, Table, TableBodyRow, TableBody, TableBodyCell, Label, Range, Textarea, Button, Avatar } from "flowbite-svelte";
+    import { P, Card, Spinner, Modal, Input, Tabs, TabItem, TableHeadCell, TableHead, Table, TableBodyRow, TableBody, TableBodyCell, Label, Range, Textarea, Button, Avatar } from "flowbite-svelte";
     import { GetUserFavs, getSubCollection, GetLeaderboard, AddReview, GetReviews } from "$lib/firebase";
-    import { profileImg, profileName, profileFavs, profileUid } from "../../stores";
+    import { profileImg, profileName, profileFavs, profileUid, profileImportant } from "../../stores";
     import StarRating from "svelte-star-rating";
     let favs = [];
     let review = "";
@@ -21,6 +21,10 @@
     profileUid.subscribe((value) => {
         uid = value;
     });
+    let isUserImportant = false;
+    profileImportant.subscribe((value) => {
+        isUserImportant = value;
+    });
     let modal = false;
     let modalNum = 0
     function LeaderBoardClick(number) {
@@ -32,7 +36,7 @@
         AddReviewModal = !AddReviewModal;
     }
     async function AddReviewFunc(data) {
-        await AddReview(data, {review: reviewsGot, rating: rating, name: userinfo[0], img: userinfo[1]});
+        await AddReview(data, {review: review, rating: rating, name: name, img: img, isImportant: isUserImportant, video: video});
         AddReviewModal = false;
         reviews(data)
     }
@@ -58,6 +62,7 @@
             strokeUnfilledColor: '#FFFFFF'
         }
     }
+    let video = "";
 </script>
 <style>
     .LeaderBoardElement {
@@ -168,14 +173,18 @@
                         </TabItem>
                         <TabItem title="Reviews" on:click={() => reviews(GotData)}>
                             <center>
-                                <button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
+                                <Button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
                                     <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
-                                </button>
+                                </Button>
                                 <Modal title={GotData.name+" by "+GotData.brand} bind:open={AddReviewModal}>
                                     <Label>Review (will show your google account name and profile picture)</Label>
-                                    <textarea placeholder="Review" bind:value={review} maxlength="750" rows="4"></textarea>
-                                    <P size="xs">{review.length} / 750</P>
+                                    <Textarea placeholder="Review" bind:value={review} maxlength="2000" rows="4" />
+                                    <P size="xs">{review.length} / 2000</P>
                                     <Label for="brand">Overall Rating (0.00 - 5.00)</Label>
+                                    {#if isUserImportant}
+                                        <Label>Video ID</Label>
+                                        <Input bind:value={video} style="width:20vw;" />
+                                    {/if}
                                     <div style="display:inline-block">
                                         <StarRating config={config} rating={rating} />
                                     </div>
@@ -186,17 +195,25 @@
                                 </Modal>
                                 <div style="margin-top:15px;margin-bottom:15px" />
                                 {#if reviewsGot.length == 0}
-                                    <P>No Reviews, Will You Be The First?</P>
+                                    <P>No Reviews, Go To the Leaderboard to Add Yours</P>
                                 {:else}
-                                    {#each reviewsGot as reviews}
-                                        <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
-                                            <div style="float:right;display:inline-block">
-                                                <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
-                                                <P size="sm" style="display:inline-block;">{reviews.name}</P>
-                                            </div>
-                                            <P style="overflow-wrap: break-word;overflow-y:auto;">{reviews.review}</P>
-                                        </Card>
-                                    {/each}
+                                {#each reviewsGot as reviews}
+                                    <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px;{reviews.isImportant ? 'box-shadow: 0px 0px 104px 10px yellow;' : ''}" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
+                                        <div style="float:right;display:inline-block">
+                                            {#if reviews.isImportant}
+                                                <svg style="display:inline-block;" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="yellow" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+                                                </svg>
+                                            {/if}
+                                            <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
+                                            <P size="sm" style="display:inline-block;">{reviews.name}</P>
+                                        </div>
+                                        <P style="overflow-wrap: break-word;overflow-y:auto;">{reviews.review}</P>
+                                        {#if reviews.isImportant}
+                                            <iframe title="video" src="https://www.youtube.com/embed/{reviews.video}" />
+                                        {/if}
+                                    </Card>
+                                {/each}
                                 {/if}
                                 </center>
                         </TabItem>
