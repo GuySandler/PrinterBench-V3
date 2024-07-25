@@ -4,7 +4,7 @@
 
 </script>
 <div>
-    <img src="src/images/printerbench.svg" style="display:inline-block; width:10vw; height:10vw" alt="PrinterBench Logo" />
+    <img src="../images/printerbench.svg" style="display:inline-block; width:10vw; height:10vw" alt="PrinterBench Logo"/>
     <P size="5xl" style="display:inline-block;" align="center">PrinterBench</P>
 
     <P align="center" size="2xl">Making picking a printer easy</P>
