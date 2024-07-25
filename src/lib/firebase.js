@@ -21,6 +21,7 @@ async function setConfig() {
 
 
 let app;
+let db;
 async function initializeFirebase() {
     if (!getApps().length) {
       app = initializeApp(await setConfig());
