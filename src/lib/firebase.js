@@ -152,6 +152,11 @@ export async function signIn() {
 export async function signOut() {
     const auth = getAuth();
     await auth.signOut();
+    profileImg.set("");
+    profileName.set("");
+    profileFavs.set("");
+    profileUid.set("");
+    profileImportant.set(false)
     // console.log("User signed out");
 }
 export async function DeleteDoc(collection, Doc) {
@@ -213,10 +218,10 @@ export async function Approve(name, data) {
 export async function GetReviews(data) {
     let GotReviews;
     GotReviews = await getSubCollection("approved", data.name, "reviews")
-    console.log(GotReviews);
+    // console.log(GotReviews);
     // important first
     GotReviews.sort((a, b) => b.isImportant - a.isImportant);
-    console.log(GotReviews);
+    // console.log(GotReviews);
     return GotReviews;
 }
 export async function AddReview(data, review) {
@@ -268,17 +273,19 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
         // console.log(type);
         // console.log(features != []);
         // console.log(features);
+
+        // console.log(order);
         for (let i = 0; i < data.length; i++) {
             const subCollectionData = await getSubCollection("approved", data[i], "cases");
-          
+            // console.log(subCollectionData);
             let filteredData = type !== "all" ? subCollectionData.filter(item => item.type === type) : subCollectionData;
-          
+            // console.log(filteredData);
             // if (features.length !== 0) {
             //   filteredData = filteredData.filter(item => features.some(feature => item[feature] === true));
             // }
 
             returnData.push(...filteredData);
-
+            // console.log(returnData);
             if (features.length !== 0) {
                 returnData = returnData.filter(printer => FilterFeatures(printer, features));
             }
@@ -286,9 +293,9 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
         // console.log(returnData);
         if (order == "name") returnData.sort();
         // console.log(order)
-        else if  (order == "speed") returnData.sort((a, b) => b[0].speed - a[0].speed);
-        else if (order == "points") returnData.sort((a, b) => b[0].points - a[0].points);
-        else if (order == "price") returnData.sort((a, b) => b[0].price - a[0].price);
+        else if  (order == "speed") returnData.sort((a, b) => b.speed - a.speed);
+        else if (order == "points") returnData.sort((a, b) => b.points - a.points);
+        else if (order == "price") returnData.sort((a, b) => b.price - a.price);
         // console.log(returnData);
         if (name != "") {
             returnData = returnData.filter(printer => printer.name.toLowerCase().includes(name.toLowerCase()));
@@ -297,7 +304,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
             returnData = returnData.filter(printer => printer.brand.toLowerCase().includes(brand.toLowerCase()));
         }
         // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
-        console.log(returnData);
+        // console.log(returnData);
         return returnData;
     }
 }

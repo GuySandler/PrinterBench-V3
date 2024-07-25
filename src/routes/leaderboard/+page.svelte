@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, AdvancedRating, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs, profileImportant } from "../../stores";
@@ -159,9 +159,10 @@
                 if (favs.includes(name)) {isFav[i] = 'favOn'};
                 if (favs.includes(name)) {isFav[i] = 'fav'};
             }
-            console.log(isFav);
-            
+            // console.log(isFav);
+
         }
+        updater = !updater;
     }
     // }
     let isUserImportant = false;
@@ -220,7 +221,7 @@
     }
 </style>
 <!-- <P>{featureFilterSelected}</P> -->
-<div class="w-9/12"><center>
+<div class="w-9/12">
     <div style="width:100%;" class="centerFlexBox">
         <P style="">Filters</P>
     </div>
@@ -302,33 +303,37 @@
                 <Tabs>
                     <TabItem open title="Info" on:click={() => function(){}}>
                         <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;">
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Price</P>
-                                <P style="text-align:center" size="lg">${GotData.price}</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Price</P>
+                                <P align="center" size="lg">${GotData.price}</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Type</P>
-                                <P style="text-align:center" size="lg">{GotData.type}</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Type</P>
+                                <P align="center" size="lg">{GotData.type}</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Speed</P>
-                                <P style="text-align:center" size="lg">{GotData.speed}mm/s</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Speed</P>
+                                <P align="center" size="lg">{GotData.speed}mm/s</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Accel</P>
-                                <P style="text-align:center" size="lg">{GotData.acceleration}mm/s</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Accel</P>
+                                <P align="center" size="lg">{GotData.acceleration}mm/s</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);">
-                                <P style="text-align:center" size="2xl">Size (mm)</P>
-                                <P style="text-align:center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
+                            <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);;margin:7px">
+                                <P align="center" size="2xl">Size (mm)</P>
+                                <P align="center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Accel</P>
-                                <P style="text-align:center" size="lg">{GotData.acceleration}mm/s</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Accel</P>
+                                <P align="center" size="lg">{GotData.acceleration}mm/s</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block">
-                                <P style="text-align:center" size="2xl">Points</P>
-                                <P style="text-align:center" size="lg">{GotData.points}</P>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Points</P>
+                                <P align="center" size="lg">{GotData.points}</P>
+                            </Card>
+                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
+                                <P align="center" size="2xl">Rating</P>
+                                <div style="display:inline-block"><StarRating config={config} rating={GotData.rating} /></div>
                             </Card>
                         </div>
                     </TabItem>
@@ -347,64 +352,68 @@
                                     <TableBodyRow>{#if GotData.camera}<TableBodyCell>camera</TableBodyCell>{/if}</TableBodyRow>
                                     <TableBodyRow>{#if GotData.wifi}<TableBodyCell>wifi</TableBodyCell>{/if}</TableBodyRow>
                                     <TableBodyRow>{#if GotData.remoteAccess}<TableBodyCell>remoteAccess</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>
-                                        {#if GotData.touchscreen}
-                                            <TableBodyCell>touchscreen</TableBodyCell>
-                                        {/if}
-                                    </TableBodyRow>
+                                    <TableBodyRow>{#if GotData.touchscreen}<TableBodyCell>touchscreen</TableBodyCell>{/if}</TableBodyRow>
                             </TableBody>
                         </Table>
                     </TabItem>
                     <TabItem title="Reviews" on:click={() => reviews(GotData)}>
-                        <center>
-                            {#if userinfo[1] != undefined}
-                                <Button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
-                                    <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
-                                </Button>
-                                <Modal title={GotData.name+" by "+GotData.brand} bind:open={AddReviewModal}>
-                                    <Label>Review (will show your google account name and profile picture)</Label>
-                                    <Textarea placeholder="Review" bind:value={review} maxlength="750" rows="4" />
-                                    <P size="xs">{review.length} / 750</P>
-                                    <Label for="brand">Overall Rating (0.00 - 5.00)</Label>
-                                    {#if isUserImportant}
-                                        <Label>Video ID</Label>
-                                        <Input bind:value={video} style="width:20vw;" />
-                                    {/if}
-                                    <div style="display:inline-block">
-                                        <StarRating config={config} rating={rating} />
-                                    </div>
-                                    <Range bind:value={rating} style="width:20vw;margin-right:10px;padding-right:10px" max={5} step={0.25} id="rating" />
-                                    <P size="3xl" style="display:inline-flex;width:5vw">{rating}</P>
-                                    <br>
-                                    <Button on:click={() => AddReviewFunc(GotData)}>Add Review</Button>
-                                </Modal>
-                            {:else}
-                                <P>Log In to Add a Review</P>
-                                <!-- <button on:click={() => AddReview(GotData, {test: "Review Test"})}>Review Test</button> -->
-                            {/if}
-                            <div style="margin-top:15px;margin-bottom:15px" />
-                            {#if reviewsGot.length == 0}
-                                <P>No Reviews, Will You Be The First?</P>
-                            {:else}
-                                {#each reviewsGot as reviews}
-                                    <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px;{reviews.isImportant ? 'box-shadow: 0px 0px 104px 10px yellow;' : ''}" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
-                                        <div style="float:right;display:inline-block">
-                                            {#if reviews.isImportant}
-                                                <svg style="display:inline-block;" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="yellow" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
-                                                </svg>
-                                            {/if}
-                                            <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
-                                            <P size="sm" style="display:inline-block;">{reviews.name}</P>
-                                        </div>
-                                        <P style="overflow-wrap: break-word;overflow-y:auto;">{reviews.review}</P>
+                        {#if userinfo[1] != undefined}
+                            <Button on:click={AddReviewModalFunc} style="padding:5px;border-radius:5px;transition:all 0.3s" class="hover:scale-110 border-2 border-black dark:border-white">
+                                <svg style="display:inline" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg> Add Review
+                            </Button>
+                            <Modal title={GotData.name+" by "+GotData.brand} bind:open={AddReviewModal}>
+                                <Label>Review (will show your google account name and profile picture)</Label>
+                                <Textarea placeholder="Review" bind:value={review} maxlength="2000" rows="4" />
+                                <P size="xs">{review.length} / 2000</P>
+                                <Label for="brand">Overall Rating (0.00 - 5.00)</Label>
+                                {#if isUserImportant}
+                                    <Label>Video ID</Label>
+                                    <Input bind:value={video} style="width:20vw;" />
+                                {/if}
+                                <div style="display:inline-block">
+                                    <StarRating config={config} rating={rating} />
+                                </div>
+                                <Range bind:value={rating} style="width:20vw;margin-right:10px;padding-right:10px" max={5} step={0.25} id="rating" />
+                                <P size="3xl" style="display:inline-flex;width:5vw">{rating}</P>
+                                <br>
+                                <Button on:click={() => AddReviewFunc(GotData)}>Add Review</Button>
+                            </Modal>
+                        {:else}
+                            <P>Log In to Add a Review</P>
+                            <!-- <button on:click={() => AddReview(GotData, {test: "Review Test"})}>Review Test</button> -->
+                        {/if}
+                        <div style="margin-top:15px;margin-bottom:15px" />
+                        {#if reviewsGot.length == 0}
+                            <P>No Reviews, Will You Be The First?</P>
+                        {:else}
+                        <!-- <AdvancedRating
+                            ratings={[
+                                { label: '5 star‎‎‎‎‎‎', rating: 70 },
+                                { label: '4-4.75 star', rating: 17 },
+                                { label: '3-3.75 star', rating: 8 },
+                                { label: '2-2.75 star', rating: 4 },
+                                { label: '0-1.75 star', rating: 1 }
+                            ]}>
+                            <P slot="globalText" align="center">{reviewsGot.length} Reviews</P>
+                        </AdvancedRating> scrapped due to not working -->
+                            {#each reviewsGot as reviews}
+                                <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px;{reviews.isImportant ? 'box-shadow: 0px 0px 104px 10px yellow;' : ''}" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
+                                    <div style="float:right;display:inline-block">
                                         {#if reviews.isImportant}
-                                            <iframe title="video" src="https://www.youtube.com/embed/{reviews.video}" />
+                                            <svg style="display:inline-block;" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="yellow" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+                                            </svg>
                                         {/if}
-                                    </Card>
-                                {/each}
-                            {/if}
-                            </center>
+                                        <Avatar src="{reviews.img}" size="sm" rounded style="display:inline-block;" />
+                                        <P size="sm" style="display:inline-block;">{reviews.name}</P>
+                                    </div>
+                                    <P style="overflow-wrap: break-word;overflow-y:auto;">{reviews.review}</P>
+                                    {#if reviews.isImportant}
+                                        <iframe title="video" src="https://www.youtube.com/embed/{reviews.video}" />
+                                    {/if}
+                                </Card>
+                            {/each}
+                        {/if}
                     </TabItem>
                 </Tabs>
                 <svelte:fragment slot="footer">
@@ -418,4 +427,4 @@
     {:catch error}
         <P style="color: red">{error.message}</P>
     {/await}
-</center></div>
+</div>

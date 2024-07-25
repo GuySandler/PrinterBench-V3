@@ -135,7 +135,7 @@
         <Select bind:value={type} id="type">
             <option value=bedslinger>Bedslinger</option>
             <option value=corexy>CoreXY</option>
-            <option value=delta>Delta</option>
+            <!-- <option value=delta>Delta</option> -->
             <!-- <option value=resin>resin</option> -->
         </Select>
 
