@@ -121,6 +121,7 @@ export async function signIn() {
         } else {
             await setDoc(doc(db, "users", uid), {
                 favorites: [],
+                isImportant: false,
             });
             console.log("User doc made");
             UserFavs = [];
@@ -211,7 +212,14 @@ export async function Approve(name, data) {
 export async function GetReviews(data) {
     let GotReviews;
     GotReviews = await getSubCollection("approved", data.name, "reviews")
-    // console.log(GotReviews);
+    console.log(GotReviews);
+    // important first
+    GotReviews.sort((a, b) => {
+        const aImportant = a.review.includes("isImportant") ? 1 : 0;
+        const bImportant = b.review.includes("isImportant") ? 1 : 0;
+        return bImportant - aImportant;
+    });
+    console.log(GotReviews);
     return GotReviews;
 }
 export async function AddReview(data, review) {
@@ -328,5 +336,15 @@ export async function SetFavs(Favs) {
     const UserDocRef = doc(db, "users", profileUID);
     await setDoc(UserDocRef, {
         favorites: Favs,
+        isImportant: false,
     });
+}
+export async function isImportant() {
+    if (profileUID == "") return false;
+    const UserDocRef = doc(db, "users", profileUID);
+    const UserDocSnap = await getDoc(UserDocRef);
+    if (UserDocSnap.exists()) {
+        // console.log(UserDocSnap.data().isImportant);
+        return UserDocSnap.data().isImportant;
+    }
 }

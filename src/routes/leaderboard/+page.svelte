@@ -3,7 +3,7 @@
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs } from "../../stores";
-    import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs } from "$lib/firebase"
+    import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs, isImportant } from "$lib/firebase"
     import { onMount } from 'svelte';
 
     let userinfo = [];
@@ -21,8 +21,10 @@
     function AddReviewModalFunc() {
         AddReviewModal = !AddReviewModal;
     }
+    // isImportant()
     async function AddReviewFunc(data) {
-        await AddReview(data, {review: review, rating: rating, name: userinfo[0], img: userinfo[1]});
+        // isUserImportant = await;
+        await AddReview(data, {review: review, rating: rating, name: userinfo[0], img: userinfo[1], isImportant: await isImportant()});
         AddReviewModal = false;
         reviews(data)
     }
