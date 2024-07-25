@@ -11,15 +11,10 @@
     //     console.log(data[i].brand);
     //     // return data[i];
     // }
-    function DeleteDocNew(type, collection, name) {
-        if (type == "pending") {
-            DeleteDoc("pending", name);
-        } else if (type == "approved") {
-            DeleteDoc("approved", collection, name);
-        } else if (type == "reviews") {
-            DeleteDoc("reviews", collection, name);
-        }
-        // DeleteDoc("pending", data[parseInt(PendingSelect)]);
+    function DeleteDocNew(PendingSelect) {
+        GetDashboardDocsId("pending").then(data =>
+            DeleteDoc("pending", data[parseInt(PendingSelect)])
+        )
         RedoAwait = !RedoAwait;
     }
     let RedoAwait = false;
@@ -95,7 +90,6 @@
                             <P>{error}</P>
                         {/await}
                     {/if}
-                    <Button on:click={() => DeleteDocNew(GetDataOption, PrinterSelect, Data[PendingSelect].name)}>Delete</Button>
                 {:else}
                 <!-- <P>{Data[0].name}</P> -->
                     <Select bind:value={PendingSelect} style="width:25vw;margin-bottom:15px">
@@ -128,9 +122,9 @@
                             <P>multicolor Price: ${Data[PendingSelect].multicolorPrice}</P>
                         {/if}
                     {/if}
-                    <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
-                    <Button on:click={() => DeleteDocNew("pending", "pending", Data[PendingSelect].name)}>Delete</Button>
                 {/if}
+                <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
+                <Button on:click={() => DeleteDocNew(PendingSelect)}>Delete</Button>
             {:catch error}
                 <p style="color:red">{error.message}</p>
             {/await}
