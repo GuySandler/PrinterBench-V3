@@ -18,6 +18,10 @@
         RedoAwait = !RedoAwait;
     }
     let RedoAwait = false;
+    import { dev } from '$app/environment';
+    import { inject } from '@vercel/analytics';
+    
+    inject({ mode: dev ? 'development' : 'production' });
 </script>
 <center>
     <div style="float:left;margin:20px;padding:20px;border-radius:5px" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">

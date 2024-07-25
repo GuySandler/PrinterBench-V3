@@ -3,6 +3,12 @@
     import { GetUserFavs, getSubCollection, GetLeaderboard, AddReview, GetReviews } from "$lib/firebase";
     import { profileImg, profileName, profileFavs, profileUid, profileImportant } from "../../stores";
     import StarRating from "svelte-star-rating";
+
+    import { dev } from '$app/environment';
+    import { inject } from '@vercel/analytics';
+    
+    inject({ mode: dev ? 'development' : 'production' });
+    
     let favs = [];
     let review = "";
     let rating = 2.5;

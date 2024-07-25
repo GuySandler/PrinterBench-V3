@@ -5,7 +5,12 @@
     import { profileImg, profileName, profileFavs, profileImportant } from "../../stores";
     import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs, isImportant } from "$lib/firebase"
     import { onMount } from 'svelte';
-  import Layout from "../+layout.svelte";
+    import Layout from "../+layout.svelte";
+
+    import { dev } from '$app/environment';
+    import { inject } from '@vercel/analytics';
+    
+    inject({ mode: dev ? 'development' : 'production' });
 
     let userinfo = [];
     // $: {
