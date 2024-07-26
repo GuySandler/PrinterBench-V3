@@ -176,6 +176,11 @@
     });
     let HowPointCalc = false;
     let testprice = 0;
+    let testsizex = 0;
+    let testsizey = 0;
+    let testsizez = 0;
+    let testacceleration = 0;
+    let testspeed = 0;
 </script>
 <style>
     .centerFlexBox {
@@ -428,26 +433,43 @@
 <Footer>
     <Button align="center" on:click={() => HowPointCalc = true}>How are points calculated?</Button>
     <Modal title="How are points calculated?" bind:open={HowPointCalc} size="lg">
-        <P align="center">Auto Z Offset = 40 | It's kind of important nowdays</P>
-        <P align="center">Auto Bed Leveling = 40 | Necessity</P>
-        <P align="center">Power Loss Recovery = 30 | Necessity but most have it</P>
-        <P align="center">Filament Run Out Sensor = 25 | You can live without it, but it's important</P>
-        <P align="center">Air Purifier = 20 | Nice feature a lot don't have</P>
-        <P align="center">Input Shaping = 25 | You can live without it, but it's important</P>
-        <P align="center">Camera = 20 | Nice feature a lot don't have</P>
-        <P align="center">Wifi = 20 | Somewhat a necessity nowdays</P>
-        <P align="center">Remote Access = 20 | Somewhat a necessity nowdays</P>
-        <P align="center">Touchscreen = 20 | Somewhat a necessity nowdays</P>
-        <P align="center">Enclosure = 20 | Nice feature a lot don't have</P>
-        <P align="center">Open Source = 25 | Nice to have but most are not</P>
-        <P align="center">Price: (110/(price+5))*100</P>
-        <Label>Try it</Label>
-        <Input bind:value={testprice} type="number"/>
-        <P style="display:inline-block">{(110/(testprice+5))*100}</P>
-        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
-        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
-        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
-        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
-        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+        <div style="overflow-y:auto;">
+            <P align="center" size="sm">Auto Z Offset = 40 | It's kind of important nowdays</P>
+            <P align="center" size="sm">Auto Bed Leveling = 40 | Necessity</P>
+            <P align="center" size="sm">Power Loss Recovery = 30 | Necessity but most have it</P>
+            <P align="center" size="sm">Filament Run Out Sensor = 25 | You can live without it, but it's important</P>
+            <P align="center" size="sm">Air Purifier = 20 | Nice feature a lot don't have</P>
+            <P align="center" size="sm">Input Shaping = 25 | You can live without it, but it's important</P>
+            <P align="center" size="sm">Camera = 20 | Nice feature a lot don't have</P>
+            <P align="center" size="sm">Wifi = 20 | Somewhat a necessity nowdays</P>
+            <P align="center" size="sm">Remote Access = 20 | Somewhat a necessity nowdays</P>
+            <P align="center" size="sm">Touchscreen = 20 | Somewhat a necessity nowdays</P>
+            <P align="center" size="sm">Enclosure = 20 | Nice feature a lot don't have</P>
+            <P align="center" size="sm">Open Source = 25 | Nice to have but most are not</P>
+
+            <P align="center">Price: (110/(price+5))*100</P>
+            <Label>Try it</Label>
+            <Input bind:value={testprice} type="number" style="display:inline-block;width:15vw"/>
+            <P style="display:inline-block;">{(110/(parseInt(testprice)+5))*100}</P>
+
+            <P align="center">Speed: (0.025*log(speed)*(2+speed)+10)/2 (only /2 for script)</P>
+            <Label>Try it (mm/s)</Label>
+            <Input bind:value={testspeed} type="number" style="display:inline-block;width:15vw"/>
+            <P style="display:inline-block;">{(0.025*Math.log(parseInt(testspeed))*(2+parseInt(testspeed))+10)/2}</P>
+
+            <P align="center">Size: round(∛(volume)/8.5)</P>
+            <Label>Try it (mm)</Label>
+            <Input bind:value={testsizex} type="number" style="display:inline-block;width:10vw"/>
+            <Input bind:value={testsizey} type="number" style="display:inline-block;width:10vw"/>
+            <Input bind:value={testsizez} type="number" style="display:inline-block;width:10vw"/>
+            <P style="display:inline-block;">{Math.round(Math.cbrt((parseInt(testsizex)*parseInt(testsizey)*parseInt(testsizez)))/8.5)}</P>
+
+            <P align="center">acceleration = round(acceleration/255)</P>
+            <Label>Try it (mm/s)</Label>
+            <Input bind:value={testacceleration} type="number" style="display:inline-block;width:10vw"/>
+            <P style="display:inline-block;">{Math.round(parseInt(testacceleration)/255)}</P>
+
+            <A href="https://www.desmos.com/calculator/xqnqpahn8o">Desmos</A>
+        </div>
     </Modal>
 </Footer>

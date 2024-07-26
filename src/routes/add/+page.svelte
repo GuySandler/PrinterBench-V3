@@ -19,10 +19,10 @@
         if (enclosure) points += 20;
         if (openSource) points += 25;
         if (multicolor) points += 15;
-        points += (110/(parseInt(price)+5))*100
-        points += (1/Math.log(parseInt(speed)))*210 // speed
-        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.35) // volume
-        points += Math.round(parseInt(acceleration)/500) // acceleration
+        points += (110/(parseInt(price)+5))*100 // price
+        points += (0.025*Math.log(parseInt(speed))*(2+parseInt(speed))+10)/2 // speed
+        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))/8.5) // volume
+        points += Math.round(parseInt(acceleration)/255) // acceleration
         return Math.round(points);
     }
     const handleSubmit = () => {
