@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc} from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc, updateDoc} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName, profileUid, profileFavs, profileImportant } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
@@ -76,23 +76,20 @@ export async function getCollections(OuterCollectionName, type) {
 export async function getSubCollection(OuterCollectionName, InnerCollectionName, ExtraInnerCollectionName) {
     const Ref1 = collection(db, OuterCollectionName); // "approved"
     // const Ref2 = collection(Ref1, InnerCollectionName, ExtraInnerCollectionName); // "mk3s+, cases"
-    const Ref2 = doc(Ref1, InnerCollectionName);
-    const Ref3 = collection(Ref2, ExtraInnerCollectionName);
+    const Ref2 = doc(Ref1, InnerCollectionName); // mk3s+
+    const Ref3 = collection(Ref2, ExtraInnerCollectionName); // cases
     let data = [];
 
     try {
-        const querySnapshot = await getDocs(Ref3); // this is the problem
+        const querySnapshot = await getDocs(Ref3);
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
         });
-        // const doc = await getDoc(Ref2); // this is the problem
-        // console.log(doc.data());
     } catch (error) {
         console.log("Error getting documents: ", error);
     }
-    // error is triggered here ^^^
 
-    // console.log(data);
+    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     return data;
 }
 export async function signIn() {
@@ -215,11 +212,10 @@ export async function GetDashboardDocsId(name) {
 export async function Approve(name, data) {
     const Ref1 = collection(db, "approved");
     const Ref2 = collection(Ref1, name, "cases");
-    const docRef = doc(db, 'your-collection-name', 'your-document-id');
-    await addDoc(Ref2, data); // fix nonexistant issue
+    const docRef = doc(db, 'approved', name);
+    await addDoc(Ref2, data);
     await setDoc(docRef, {name: name});
-    // addData("approved", PendingData);
-    // DeleteDoc("pending", PendingData.id);
+    alert("approved")
 }
 export async function GetReviews(data) {
     let GotReviews;
@@ -359,4 +355,47 @@ export async function isImportant() {
         // console.log(UserDocSnap.data().isImportant);
         return UserDocSnap.data().isImportant;
     }
+}
+export async function RecalcPoints(name, index) {
+    // const subCollectionData = await getSubCollection("approved", name, "cases");
+    // console.log(subCollectionData[index].points);
+    // updateDoc()
+    const Ref1 = collection(db, "approved");
+    const Ref2 = doc(Ref1, name);
+    const Ref3 = collection(Ref2, "cases");
+    let dataID = [];
+    let data = [];
+    const querySnapshot = await getDocs(Ref3); // this is the problem
+    querySnapshot.forEach((doc) => {
+        dataID.push(doc.id);
+        data.push(doc.data());
+    });
+
+    let points = 0;
+    if (data[index].autoZOffset) points += 40;
+    if (data[index].autoBedLeveling) points += 40;
+    if (data[index].powerLossRecovery) points += 30;
+    if (data[index].filamentRunOutSensor) points += 25;
+    if (data[index].airPurifier) points += 20;
+    if (data[index].inputShaping) points += 25;
+    if (data[index].camera) points += 20;
+    if (data[index].wifi) points += 20;
+    if (data[index].remoteAccess) points += 20;
+    if (data[index].touchscreen) points += 20;
+    if (data[index].enclosure) points += 20;
+    if (data[index].openSource) points += 25;
+    if (data[index].multicolor) points += 15;
+    points += (110/(parseInt(data[index].price)+5))*100 // price
+    points += (0.025*Math.log(parseInt(data[index].speed))*(2+parseInt(data[index].speed))+10)/2 // speed
+    points += Math.round(Math.cbrt((parseInt(data[index].sizex)*parseInt(data[index].sizey)*parseInt(data[index].sizez)))/8.5) // volume
+    points += Math.round(parseInt(data[index].acceleration)/255) // acceleration
+    points = Math.round(points);
+
+    let docName = dataID[index];
+    const DocRef = doc(db, "approved", name, "cases", docName);
+    // const snapshot = await getDoc(targetPost)
+    await updateDoc(DocRef, {
+        points: points
+    });
+    alert("Points recalculated")
 }

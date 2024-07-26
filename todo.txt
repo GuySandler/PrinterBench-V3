@@ -1,9 +1,24 @@
+Bugs:
 size -> mm V
 fix submit V
-fix dashboard V- (pending done but still need auto delete)
+fix dashboard V
 require login to add V
-recalc points button
+recalc points button V
+
 suggestions:
 more types
 open source toggle
 moddability input
+tooltip for features
+shop from leaderboard bug
+spesific bedslinger
+hotend
+max temp
+heat up time
+local heating zones
+spesific bed leveling
+camera details
+drive style
+firmware
+--advanced mode to see extra details
+filter by price

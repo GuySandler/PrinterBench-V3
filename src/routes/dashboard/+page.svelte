@@ -1,6 +1,6 @@
 <script>
     import { Avatar, Button, P, Select, Spinner } from "flowbite-svelte";
-    import { getSubCollection, Approve, DeleteDoc, GetDashboardDocs, GetDashboardDocsId} from "$lib/firebase"
+    import { getSubCollection, Approve, DeleteDoc, GetDashboardDocs, GetDashboardDocsId, RecalcPoints } from "$lib/firebase"
 
     let GetDataOption = "";
     let PrinterSelect = "";
@@ -76,6 +76,8 @@
                                     <Avatar src={SubData[InfoSelect].img} alt={SubData[InfoSelect].name} />
                                     <P style="overflow-wrap: break-word;overflow-y:auto;">{SubData[InfoSelect].review}</P>
                             {/if}
+                            <Button on:click={() => RecalcPoints(PrinterSelect, InfoSelect)}>Recalc Points</Button>
+
                         {:catch error}
                             <P>Probobly None Found</P>
                             <P>{error}</P>
@@ -109,9 +111,9 @@
                         {#if Data[PendingSelect].multicolor}
                             <P>multicolor Price: ${Data[PendingSelect].multicolorPrice}</P>
                         {/if}
+                        <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
                     {/if}
                 {/if}
-                <Button on:click={() => Approve(Data[PendingSelect].name, Data[PendingSelect])}>Approve</Button>
                 <Button on:click={() => DeleteDocNew(PendingSelect)}>Delete</Button>
             {:catch error}
                 <p style="color:red">{error.message}</p>

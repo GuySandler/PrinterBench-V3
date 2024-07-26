@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Label, Input, Button, Select, Toggle, Range, P } from "flowbite-svelte";
+    import { Label, Input, Button, Select, Toggle, Range, P, Popover } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { Confetti } from "svelte-confetti"
     import { profileImg } from "../../stores";
@@ -152,10 +152,18 @@
         <Label for="link">Printer Brand</Label>
         <Input bind:value={link} autocomplete="autocomplete_off_randString"  id="link" placeholder="https://www.prusa3d.com/product/original-prusa-mk4/" />
 
-        <!-- add unspesified option -->
-        <Label for="brand">Speed (according to offical website in mm/s)</Label>
+        <Label class="inline-block" for="brand">Speed (If you can't find it google)</Label>
+        <svg id="speedTooltip" class="w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        </svg>
+        <Popover class="w-64 text-sm font-light " title="Speed" triggeredBy="#speedTooltip">The max speed of laying down material.</Popover>
         <Input bind:value={speed} autocomplete="autocomplete_off_randString"  id="speed" placeholder="600" />
-        <Label for="brand">Acceleration (according to offical website in mm/s)</Label>
+
+        <Label class="inline-block" for="brand">Acceleration (according to offical website in mm/s)</Label>
+        <svg id="accelerationTooltip" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        </svg>
+        <Popover class="w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
         <Input bind:value={acceleration} autocomplete="autocomplete_off_randString"  id="brand" placeholder="20000" />
 
         <div style="display:inline-block">
@@ -172,9 +180,25 @@
         </div>
         <Label for="features">Features</Label>
         <div style="display:inline-block;border-right:1px solid gray;padding-right:15px">
-            <Toggle bind:checked={autoZOffset}>Auto Z offset</Toggle>
+
+            <Toggle bind:checked={autoZOffset}>
+                Auto Z offset
+                <svg id="ZOffsetTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="w-64 text-sm font-light " title="Auto Z offset" triggeredBy="#ZOffsetTooltip">Some kind of mechanism that automatically gets the appropriate distance between the nozzle and the bed for the first layer</Popover>
+            </Toggle>
+
             <div class="spacer" />
-            <Toggle bind:checked={autoBedLeveling}>Auto Bed Leveling</Toggle>
+
+            <Toggle bind:checked={autoBedLeveling}>
+                Auto Bed Leveling
+                <svg id="BedLevelTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="w-64 text-sm font-light " title="Auto Bed Leveling" triggeredBy="#BedLevelTooltip">The bed isn't always flat so this mechanism helps get the offsets from diffrent positions of the bed to fix it</Popover>
+            </Toggle>
+
             <div class="spacer" />
             <Toggle bind:checked={powerLossRecovery}>Power Loss Recovery</Toggle>
             <div class="spacer" />
