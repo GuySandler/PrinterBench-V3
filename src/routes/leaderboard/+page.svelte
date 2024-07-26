@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, AdvancedRating, Rating, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, AdvancedRating, Rating, Footer, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs, profileImportant } from "../../stores";
@@ -174,6 +174,8 @@
     profileImportant.subscribe((value) => {
         isUserImportant = value;
     });
+    let HowPointCalc = false;
+    let testprice = 0;
 </script>
 <style>
     .centerFlexBox {
@@ -391,16 +393,6 @@
                         {#if reviewsGot.length == 0}
                             <P>No Reviews, Will You Be The First?</P>
                         {:else}
-                        <!-- <AdvancedRating
-                            ratings={[
-                                { label: '5 star‎‎‎‎‎‎', rating: 70 },
-                                { label: '4-4.75 star', rating: 17 },
-                                { label: '3-3.75 star', rating: 8 },
-                                { label: '2-2.75 star', rating: 4 },
-                                { label: '0-1.75 star', rating: 1 }
-                            ]}>
-                            <P slot="globalText" align="center">{reviewsGot.length} Reviews</P>
-                        </AdvancedRating> scrapped due to not working -->
                             {#each reviewsGot as reviews}
                                 <Card style="width:50vw;margin:10px;padding:10px;border-radius:5px;{reviews.isImportant ? 'box-shadow: 0px 0px 104px 10px yellow;' : ''}" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
                                     <div style="float:right;display:inline-block">
@@ -433,3 +425,29 @@
         <P style="color: red">{error.message}</P>
     {/await}
 </div>
+<Footer>
+    <Button align="center" on:click={() => HowPointCalc = true}>How are points calculated?</Button>
+    <Modal title="How are points calculated?" bind:open={HowPointCalc} size="lg">
+        <P align="center">Auto Z Offset = 40 | It's kind of important nowdays</P>
+        <P align="center">Auto Bed Leveling = 40 | Necessity</P>
+        <P align="center">Power Loss Recovery = 30 | Necessity but most have it</P>
+        <P align="center">Filament Run Out Sensor = 25 | You can live without it, but it's important</P>
+        <P align="center">Air Purifier = 20 | Nice feature a lot don't have</P>
+        <P align="center">Input Shaping = 25 | You can live without it, but it's important</P>
+        <P align="center">Camera = 20 | Nice feature a lot don't have</P>
+        <P align="center">Wifi = 20 | Somewhat a necessity nowdays</P>
+        <P align="center">Remote Access = 20 | Somewhat a necessity nowdays</P>
+        <P align="center">Touchscreen = 20 | Somewhat a necessity nowdays</P>
+        <P align="center">Enclosure = 20 | Nice feature a lot don't have</P>
+        <P align="center">Open Source = 25 | Nice to have but most are not</P>
+        <P align="center">Price: (110/(price+5))*100</P>
+        <Label>Try it</Label>
+        <Input bind:value={testprice} type="number"/>
+        <P style="display:inline-block">{(110/(testprice+5))*100}</P>
+        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+        <P align="center">Multicolor = 15 | Nice to have an option but costs extra</P>
+    </Modal>
+</Footer>

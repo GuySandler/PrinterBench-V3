@@ -213,10 +213,11 @@ export async function GetDashboardDocsId(name) {
     return data;
 }
 export async function Approve(name, data) {
-    // console.log(await getSubCollection(PendingData, "cases"));
     const Ref1 = collection(db, "approved");
-    const Ref2 = collection(Ref1, data.name, "cases");
+    const Ref2 = collection(Ref1, name, "cases");
+    const docRef = doc(db, 'your-collection-name', 'your-document-id');
     await addDoc(Ref2, data); // fix nonexistant issue
+    await setDoc(docRef, {name: name});
     // addData("approved", PendingData);
     // DeleteDoc("pending", PendingData.id);
 }
@@ -270,9 +271,11 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
     }
     else {
         const q = query(collection(db, "approved"));
+        console.log(q);
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.id);
+            console.log(doc.id);
         });
         // console.log(data);
         // console.log(type);
@@ -309,7 +312,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
             returnData = returnData.filter(printer => printer.brand.toLowerCase().includes(brand.toLowerCase()));
         }
         // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
-        // console.log(returnData);
+        console.log(returnData);
         return returnData;
     }
 }

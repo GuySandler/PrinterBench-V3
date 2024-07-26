@@ -1,0 +1,9 @@
+size -> mm V
+fix submit V
+fix dashboard V- (pending done but still need auto delete)
+require login to add V
+recalc points button
+suggestions:
+more types
+open source toggle
+moddability input

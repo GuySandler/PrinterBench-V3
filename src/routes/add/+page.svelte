@@ -2,21 +2,24 @@
     import { Label, Input, Button, Select, Toggle, Range, P } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { Confetti } from "svelte-confetti"
-
+    import { profileImg } from "../../stores";
     import { test, addData } from "$lib/firebase"
     function CalculatePoints() {
         let points = 0;
-        if (autoZOffset) points += 30;
-        if (autoBedLeveling) points += 30;
-        if (powerLossRecovery) points += 20;
-        if (filamentRunOutSensor) points += 10;
-        if (airPurifier) points += 10;
-        if (inputShaping) points += 10;
-        if (camera) points += 10;
-        if (wifi) points += 10;
-        if (remoteAccess) points += 10;
-        if (touchscreen) points += 10;
+        if (autoZOffset) points += 40;
+        if (autoBedLeveling) points += 40;
+        if (powerLossRecovery) points += 30;
+        if (filamentRunOutSensor) points += 25;
+        if (airPurifier) points += 20;
+        if (inputShaping) points += 25;
+        if (camera) points += 20;
+        if (wifi) points += 20;
+        if (remoteAccess) points += 20;
+        if (touchscreen) points += 20;
         if (enclosure) points += 20;
+        if (openSource) points += 25;
+        if (multicolor) points += 15;
+        points += (110/(parseInt(price)+5))*100
         points += (1/Math.log(parseInt(speed)))*210 // speed
         points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))*1.35) // volume
         points += Math.round(parseInt(acceleration)/500) // acceleration
@@ -57,6 +60,7 @@
 
             console.log(CalculatePoints())
             addData("pending", JSON.stringify(data));
+            done = true;
         } else {
             console.log("Please fill out all fields");
         }
@@ -85,6 +89,7 @@
     let multicolor = false;
     let multicolorPrice = "";
     let enclosure = false;
+    let openSource = false;
 
     let config = {
         readOnly: false,
@@ -101,30 +106,31 @@
             strokeUnfilledColor: '#FFFFFF'
         }
     }
-    // test();
-    // condence data to JSON
-
-    // addData("test", JSON.stringify(data));
-    let done = false;
+    onMount(() => {
+        var done = false;
+    });
+    var done = false;
     import { dev } from '$app/environment';
     import { inject } from '@vercel/analytics';
-    
+    import { onMount } from "svelte";
+
     inject({ mode: dev ? 'development' : 'production' });
+
+    let isLoggedIn = false;
+    profileImg.subscribe((value) => {
+        if (value != "") {
+            isLoggedIn = true;
+        }
+    });
 </script>
 <style>
   .spacer {
     height: 10px;
   }
-  .centerFlexBox {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        margin:10px
-    }
 </style>
 {#if !done}
 <div class="w-9/12">
+    {#if isLoggedIn}
     <form>
         <Label for="name">Printer Name</Label>
         <Input bind:value={name} autocomplete="autocomplete_off_randString"  id="name" placeholder="Ender 3 V3 SE" />
@@ -153,16 +159,16 @@
         <Input bind:value={acceleration} autocomplete="autocomplete_off_randString"  id="brand" placeholder="20000" />
 
         <div style="display:inline-block">
-            <Label for="type">Build Size X (cm)</Label>
-            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (cm)" />
+            <Label for="type">Build Size X (mm)</Label>
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (mm)" />
         </div>
         <div style="display:inline-block">
-            <Label for="type">Build Size Y (cm)</Label>
-            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (cm)" />
+            <Label for="type">Build Size Y (mm)</Label>
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (mm)" />
         </div>
         <div style="display:inline-block">
-            <Label for="type">Build Size Z (cm)</Label>
-            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizez} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Z (cm)" />
+            <Label for="type">Build Size Z (mm)</Label>
+            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizez} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Z (mm)" />
         </div>
         <Label for="features">Features</Label>
         <div style="display:inline-block;border-right:1px solid gray;padding-right:15px">
@@ -173,6 +179,8 @@
             <Toggle bind:checked={powerLossRecovery}>Power Loss Recovery</Toggle>
             <div class="spacer" />
             <Toggle bind:checked={filamentRunOutSensor}>Filament Run-out Sensor</Toggle>
+            <div class="spacer" />
+            <Toggle bind:checked={openSource}>Open Source</Toggle>
         </div>
         <div style="display:inline-block;border-right:1px solid gray;margin-left:15px;padding-right:15px">
             <Toggle bind:checked={airPurifier}>Air Purifier</Toggle>
@@ -207,6 +215,10 @@
         <br>
         <Button type="submit" on:click={handleSubmit}>Submit</Button>
     </form>
+    {/if}
+    {#if !isLoggedIn}
+        <P align="center" size="2xl">Please log in to submit a printer</P>
+    {/if}
 </div>
 {/if}
 {#if done}
@@ -222,6 +234,7 @@
     pointer-events: none;">
         <Confetti x={[-5, 5]} y={[0, 0.2]} delay={[0, 0]} infinite duration=5000 amount=300 fallDistance="100vh" />
 </div>
-    <P>Thank you for submitting!</P>
-    <P>Your submittion is under review and will be added soon</P>
+    <P align="center" size="2xl">Thank you for submitting!</P>
+    <P align="center" size="2xl">Your submittion is under review and will be added soon</P>
+    <Button on:click={() => done = false}>Submit another</Button>
 {/if}

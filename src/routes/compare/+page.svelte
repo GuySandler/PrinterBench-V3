@@ -36,7 +36,7 @@
 
 </style>
 <div>
-    <P align="center" size="2xl">Comapre Printers</P>
+    <P align="center" size="2xl">Compare Printers</P>
     {#await GetPrinters()}
         <Spinner size={8} />
     {:then}
@@ -116,7 +116,7 @@
                             {/each}
                         </TableBodyRow>
                         <TableBodyRow>
-                            <TableBodyCell>Size (cm)</TableBodyCell>
+                            <TableBodyCell>Size (mm)</TableBodyCell>
                             {#each selections as selection, i}
                                 <TableBodyCell>{data[i].sizex} x {data[i].sizey} x {data[i].sizez}</TableBodyCell>
                             {/each}

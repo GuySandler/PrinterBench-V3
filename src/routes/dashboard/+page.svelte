@@ -3,14 +3,9 @@
     import { getSubCollection, Approve, DeleteDoc, GetDashboardDocs, GetDashboardDocsId} from "$lib/firebase"
 
     let GetDataOption = "";
-    // let GetDataType = "";
     let PrinterSelect = "";
     let PendingSelect = null;
     let InfoSelect = null;
-    // function GetField(data, i) {
-    //     console.log(data[i].brand);
-    //     // return data[i];
-    // }
     function DeleteDocNew(PendingSelect) {
         GetDashboardDocsId("pending").then(data =>
             DeleteDoc("pending", data[parseInt(PendingSelect)])
@@ -20,7 +15,7 @@
     let RedoAwait = false;
     import { dev } from '$app/environment';
     import { inject } from '@vercel/analytics';
-    
+
     inject({ mode: dev ? 'development' : 'production' });
 </script>
 <center>
@@ -31,14 +26,8 @@
             <option value="approved">Approved</option>
             <option value="reviews">Reviews</option>
         </Select>
-        <!-- <P>Data Type</P>
-        <Select bind:value={GetDataType} style="width:25vw;margin-bottom:15px">
-            <option value="id">Id</option>
-            <option value="data">Data</option>
-        </Select> -->
     </div>
 
-    <!-- {#if GetDataOption != "" && GetDataType != ""} -->
     {#if GetDataOption != ""}
         <div style="float:right;margin:20px;padding:20px;border-radius:5px;width:65vw;" class="bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white">
             {#await GetDashboardDocs(GetDataOption, RedoAwait)}
@@ -87,22 +76,17 @@
                                     <Avatar src={SubData[InfoSelect].img} alt={SubData[InfoSelect].name} />
                                     <P style="overflow-wrap: break-word;overflow-y:auto;">{SubData[InfoSelect].review}</P>
                             {/if}
-                            <!-- add a thing to go across cases -->
-                            <!-- <P>{SubData[InfoSelect].brand}</P> -->
                         {:catch error}
                             <P>Probobly None Found</P>
                             <P>{error}</P>
                         {/await}
                     {/if}
                 {:else}
-                <!-- <P>{Data[0].name}</P> -->
                     <Select bind:value={PendingSelect} style="width:25vw;margin-bottom:15px">
                         {#each Data as item, i}
                             <option value={i}>{item.name}</option>
                         {/each}
                     </Select>
-                    <!-- <h1>{Data[PendingSelect]}</h1> -->
-                    <!-- <button on:click={() => GetField(Data, PendingSelect)}>test</button> -->
                     {#if PendingSelect != null}
                         <P>{Data[PendingSelect].brand}'s {Data[PendingSelect].name}</P>
                         <P>{Data[PendingSelect].sizex} x {Data[PendingSelect].sizey} x {Data[PendingSelect].sizez}</P>
