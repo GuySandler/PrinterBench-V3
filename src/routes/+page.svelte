@@ -2,7 +2,11 @@
     import { P, Card } from "flowbite-svelte";
     // import { userRulesTest } from "$lib/firebase";
     import logo from '$lib/images/printerbench.svg';
-
+    import { expertMode } from "../stores";
+    let test = false;
+    expertMode.subscribe((value) => {
+        test = value;
+    });
 </script>
 <div>
     <img src={logo} style="display:inline-block; width:10vw; height:10vw" alt="PrinterBench Logo"/>
@@ -24,5 +28,6 @@
             <P align="center">Look for your Printer and Add a Review</P>
         </Card>
     </div>
+    <!-- <P>{test}</P> -->
 </div>
 <!-- <button on:click={userRulesTest}>test</button> -->

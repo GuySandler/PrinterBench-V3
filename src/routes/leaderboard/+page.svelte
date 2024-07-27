@@ -82,7 +82,7 @@
     let type = "all"
     let name = ""
     let brand = ""
-    let sortBy = "name"
+    let sortBy = "points"
 
     let rating = 2.5;
     let review = "";
@@ -340,10 +340,17 @@
                                 <Popover class="z-10 w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
                                 <P align="center" size="lg">{GotData.acceleration}mm/s</P>
                             </Card>
-                            <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);;margin:7px">
-                                <P align="center" size="2xl">Size (mm)</P>
-                                <P align="center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
-                            </Card>
+                            {#if GotData.type != "delta"}
+                                <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);;margin:7px">
+                                    <P align="center" size="2xl">Size (mm)</P>
+                                    <P align="center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
+                                </Card>
+                                {:else if GotData.type == "delta"}
+                                <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);;margin:7px">
+                                    <P align="center" size="2xl">Size (mm)</P>
+                                    <P align="center" size="sm">{GotData.diameter}⌀ x {GotData.sizez}</P>
+                                </Card>
+                            {/if}
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
                                 <P align="center" size="2xl">Points</P>
                                 <P align="center" size="lg">{GotData.points}</P>

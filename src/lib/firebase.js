@@ -309,7 +309,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
             returnData = returnData.filter(printer => printer.brand.toLowerCase().includes(brand.toLowerCase()));
         }
         // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
-        console.log(returnData);
+        // console.log(returnData);
         return returnData;
     }
 }
@@ -388,7 +388,8 @@ export async function RecalcPoints(name, index) {
     if (data[index].multicolor) points += 15;
     points += (110/(parseInt(data[index].price)+5))*100 // price
     points += (0.025*Math.log(parseInt(data[index].speed))*(2+parseInt(data[index].speed))+10)/2 // speed
-    points += Math.round(Math.cbrt((parseInt(data[index].sizex)*parseInt(data[index].sizey)*parseInt(data[index].sizez)))/8.5) // volume
+    if (data[index].type == "delta") points += Math.round(Math.cbrt((parseInt(data[index].diameter)*parseInt(data[index].sizez)))/8.5) // volume
+    else if (data[index].type != "delta") points += Math.round(Math.cbrt((parseInt(data[index].sizex)*parseInt(data[index].sizey)*parseInt(data[index].sizez)))/8.5) // volume
     points += Math.round(parseInt(data[index].acceleration)/255) // acceleration
     points = Math.round(points);
 

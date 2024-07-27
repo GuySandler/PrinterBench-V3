@@ -1,17 +1,21 @@
 <script>
-    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode, Avatar, Dropdown, DropdownItem } from 'flowbite-svelte';
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode, Avatar, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
     import { signIn, signOut } from '$lib/firebase';
-    import { profileImg } from '../stores.js';
+    import { profileImg, expertMode } from '../stores.js';
     import { redirect } from '@sveltejs/kit';
     import logo from '$lib/images/printerbench.svg';
 
     let profileImage;
+    let expert = false
 
 	profileImg.subscribe((value) => {
 		profileImage = value;
 	});
     let update = false;
-    $: update = !update;
+    $: {
+        update = !update;
+        expertMode.set(expert);
+    };
 </script>
 <div>
     <Navbar let:NavContainer>
@@ -41,6 +45,7 @@
                 <NavLi href="/add">Add Printer</NavLi>
                 <NavLi href="/compare">Compare</NavLi>
                 {#if profileImage != ""}<NavLi href="/profile">My Profile</NavLi>{/if}
+                <Toggle color="red" bind:checked={expert} disabled class="cursor-not-allowed">Expert Mode (WIP)</Toggle>
             </NavUl>
         </NavContainer>
     </Navbar>

@@ -2,8 +2,13 @@
     import { Label, Input, Button, Select, Toggle, Range, P, Popover } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { Confetti } from "svelte-confetti"
-    import { profileImg } from "../../stores";
+    import { profileImg, expertMode } from "../../stores";
     import { test, addData } from "$lib/firebase"
+    import {  } from "../stores";
+    let expert = false;
+    expertMode.subscribe((value) => {
+        expert = value;
+    });
     function CalculatePoints() {
         let points = 0;
         if (autoZOffset) points += 40;
@@ -20,8 +25,9 @@
         if (openSource) points += 25;
         if (multicolor) points += 15;
         points += (110/(parseInt(price)+5))*100 // price
+        if (type == "delta") points += Math.round(Math.cbrt((parseInt(sized)*parseInt(sizez)))/8.5) // volume
+        else if (type != "delta") points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))/8.5) // volume
         points += (0.025*Math.log(parseInt(speed))*(2+parseInt(speed))+10)/2 // speed
-        points += Math.round(Math.cbrt((parseInt(sizex)*parseInt(sizey)*parseInt(sizez)))/8.5) // volume
         points += Math.round(parseInt(acceleration)/255) // acceleration
         return Math.round(points);
     }
@@ -54,7 +60,8 @@
                 enclosure: enclosure,
                 multicolor: multicolor,
                 multicolorPrice: Math.round(parseInt(multicolorPrice)),
-                points: CalculatePoints()
+                points: CalculatePoints(),
+                diameter: type == "delta" ? sized : 0
             });
             console.log(data);
 
@@ -76,6 +83,7 @@
     let sizex = "";
     let sizey = "";
     let sizez = "";
+    let sized = "";
     let autoZOffset = false;
     let autoBedLeveling = false;
     let powerLossRecovery = false;
@@ -145,7 +153,7 @@
         <Select bind:value={type} id="type">
             <option value=bedslinger>Bedslinger</option>
             <option value=corexy>CoreXY</option>
-            <!-- <option value=delta>Delta</option> -->
+            <option value=delta>Delta</option>
             <!-- <option value=resin>resin</option> -->
         </Select>
 
@@ -166,14 +174,21 @@
         <Popover class="z-10 w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
         <Input bind:value={acceleration} autocomplete="autocomplete_off_randString"  id="brand" placeholder="20000" />
 
-        <div style="display:inline-block">
-            <Label for="type">Build Size X (mm)</Label>
-            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (mm)" />
-        </div>
-        <div style="display:inline-block">
-            <Label for="type">Build Size Y (mm)</Label>
-            <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (mm)" />
-        </div>
+        {#if type != "delta"}
+            <div style="display:inline-block">
+                <Label for="type">Build Size X (mm)</Label>
+                <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizex} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size X (mm)" />
+            </div>
+            <div style="display:inline-block">
+                <Label for="type">Build Size Y (mm)</Label>
+                <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizey} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Y (mm)" />
+            </div>
+        {:else if type == "delta"}
+            <div style="display:inline-block">
+                <Label for="type">Build Size Diameter ⌀ (mm)</Label>
+                <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sized} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size diameter ⌀ (mm)" />
+            </div>
+        {/if}
         <div style="display:inline-block">
             <Label for="type">Build Size Z (mm)</Label>
             <Input type="number" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" bind:value={sizez} style="width:10vw" autocomplete="autocomplete_off_randString"  id="size" placeholder="Enter printer build size Z (mm)" />
@@ -269,7 +284,13 @@
         </div>
         <Range bind:value={rating} style="width:20vw;margin-right:10px;padding-right:10px" max={5} step={0.25} id="rating" />
         <P size="3xl" style="display:inline-flex;width:5vw">{rating}</P>
-
+        {#if expert}
+            <div style="margin-top:10px">
+                <P align="center" size="2xl">Optional Expert Options</P>
+                <Label for="features">Features</Label>
+                <Input autocomplete="autocomplete_off_randString" />
+            </div>
+        {/if}
         <br>
         <Button type="submit" on:click={handleSubmit}>Submit</Button>
     </form>

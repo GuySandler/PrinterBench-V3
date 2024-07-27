@@ -5,7 +5,7 @@ service cloud.firestore {
     // Rules for the users collection
     match /users/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid == userId;
+      allow write, update, delete: if request.auth.uid == userId;
     }
 
     // Rules for the pending collection
@@ -16,16 +16,16 @@ service cloud.firestore {
     // Rules for the approved collection
     match /approved/{documentId} {
       allow read: if true;
-      allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+      allow write, update, delete: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
       
       // Rules for the subcollections under approved documents
       match /cases/{cases} {
         allow read: if true;
-        allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+        allow write, update, delete: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
       }
       match /reviews/{reviews} {
         allow read: if true;
-        allow write: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
+        allow write, update, delete: if request.auth.uid == 'rHOiejjzsDM3Uww9SjUpXm4z1Z22';
       }
     }
   }
