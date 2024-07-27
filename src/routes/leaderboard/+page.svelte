@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Spinner, P, Button, Modal, AdvancedRating, Rating, Footer, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
+    import { Spinner, P, Button, Modal, AdvancedRating, Rating, Popover, Footer, Tabs, TabItem, A, Card, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Select, MultiSelect, Input, Avatar, Label, Range, Textarea } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs, profileImportant } from "../../stores";
@@ -256,7 +256,8 @@
             <option value="name">Name</option>
             <option value="points">Points</option>
             <option value="speed">Speed</option>
-            <option value="price">Price</option>
+            <option value="priceH">Price (highest)</option>
+            <option value="priceL">Price (lowest)</option>
         </Select>
     </div>
     <!-- <Button on:click={() => test(featureFilterSelected)}>Filter</Button> -->
@@ -311,12 +312,12 @@
         {#await GetLeaderboard("", modalNum)}
             <Spinner size={8} />
         {:then GotData}
-            <Modal title={GotData.name+" by "+GotData.brand} bind:open={modal} size="lg">
+            <Modal title={GotData.name+" by "+GotData.brand} bind:open={modal} size="xl">
                 <Tabs>
                     <TabItem open title="Info" on:click={() => function(){}}>
                         <div style="float:left;display:flexbox;flex-wrap:warp;align-content:center;align-items:center;justify-content:center;width:100%;">
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
-                                <P align="center" size="2xl">Price</P>
+                                <P align="center"  size="2xl">Price</P>
                                 <P align="center" size="lg">${GotData.price}</P>
                             </Card>
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
@@ -324,20 +325,24 @@
                                 <P align="center" size="lg">{GotData.type}</P>
                             </Card>
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
-                                <P align="center" size="2xl">Speed</P>
+                                <P align="center" class="inline-block" size="2xl">Speed</P>
+                                <svg id="speedTooltip" class="align-middle w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                                <Popover class="z-10 w-64 text-sm font-light " title="Speed" triggeredBy="#speedTooltip">The max speed of laying down material.</Popover>
                                 <P align="center" size="lg">{GotData.speed}mm/s</P>
                             </Card>
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
-                                <P align="center" size="2xl">Accel</P>
+                                <P align="center" size="2xl" class="inline-block">Accel</P>
+                                <svg id="accelerationTooltip" class="align-middle inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                                <Popover class="z-10 w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
                                 <P align="center" size="lg">{GotData.acceleration}mm/s</P>
                             </Card>
                             <Card style="width:155px;height:100px;display:inline-block;transform:translateY(-5px);;margin:7px">
                                 <P align="center" size="2xl">Size (mm)</P>
                                 <P align="center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
-                            </Card>
-                            <Card style="width:155px;height:100px;display:inline-block;margin:7px">
-                                <P align="center" size="2xl">Accel</P>
-                                <P align="center" size="lg">{GotData.acceleration}mm/s</P>
                             </Card>
                             <Card style="width:155px;height:100px;display:inline-block;margin:7px">
                                 <P align="center" size="2xl">Points</P>
@@ -353,18 +358,22 @@
                         <Table>
                             <TableHead>
                                 <TableHeadCell>Features</TableHeadCell>
+                                <TableHeadCell>Description</TableHeadCell>
                             </TableHead>
                             <TableBody>
-                                    <TableBodyRow>{#if GotData.autoZOffset}<TableBodyCell>autoZOffset</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.autoBedLeveling}<TableBodyCell>autoBedLeveling</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.powerLossRecovery}<TableBodyCell>powerLossRecovery</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.filamentRunOutSensor}<TableBodyCell>filamentRunOutSensor</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.airPurifier}<TableBodyCell>airPurifier</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.inputShaping}<TableBodyCell>inputShaping</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.camera}<TableBodyCell>camera</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.wifi}<TableBodyCell>wifi</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.remoteAccess}<TableBodyCell>remoteAccess</TableBodyCell>{/if}</TableBodyRow>
-                                    <TableBodyRow>{#if GotData.touchscreen}<TableBodyCell>touchscreen</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.autoZOffset}<TableBodyCell>Auto Z Offset</TableBodyCell><TableBodyCell>A mechanism that automatically gets the appropriate distance between the nozzle and bed for first layer calibration.</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.autoBedLeveling}<TableBodyCell>Auto Bed Leveling</TableBodyCell><TableBodyCell>The bed isn't flat so this mechanism helps get the offsets from diffrent positions of the bed to fix it.</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.powerLossRecovery}<TableBodyCell>Power Loss Recovery</TableBodyCell><TableBodyCell>Allows printer to continue a print if the power suddenly cuts out.</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.filamentRunOutSensor}<TableBodyCell>Filament RunOut Sensor</TableBodyCell><TableBodyCell>Detects if there is no more filament and pauses.</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.airPurifier}<TableBodyCell>Air Purifier</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.inputShaping}<TableBodyCell>Input Shaping</TableBodyCell><TableBodyCell>A mechanism that adjusts the motion of the printer to reduce/compensate vibrations and improve print quality.</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.camera}<TableBodyCell>Camera</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.wifi}<TableBodyCell>Wifi</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.remoteAccess}<TableBodyCell>Remote Access</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.touchscreen}<TableBodyCell>Touchscreen</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.openSource}<TableBodyCell>Open Source</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.enclosure}<TableBodyCell>Enclosure</TableBodyCell><TableBodyCell>Some printers come with enclosures allowing you to print materials like ABS</TableBodyCell>{/if}</TableBodyRow>
+                                <TableBodyRow>{#if GotData.multicolor}<TableBodyCell>Multicolor</TableBodyCell><TableBodyCell>${GotData.multicolorPrice}</TableBodyCell>{/if}</TableBodyRow>
                             </TableBody>
                         </Table>
                     </TabItem>
@@ -419,7 +428,12 @@
                     </TabItem>
                 </Tabs>
                 <svelte:fragment slot="footer">
-                    <A href={"https://"+GotData.link}>Shop</A>
+                    {#if GotData.link.includes("https://")}
+                        <Button href="{GotData.link}" target="_blank">Shop</Button>
+                    {:else}
+                        <Button href="https://{GotData.link}" target="_blank">Shop</Button>
+                    {/if}
+                    <!-- <A href={"https://"+GotData.link}>Shop</A> -->
                     <Button color="alternative" on:click={() => modal = false}>Close</Button>
                 </svelte:fragment>
             </Modal>
@@ -469,7 +483,7 @@
             <Input bind:value={testacceleration} type="number" style="display:inline-block;width:10vw"/>
             <P style="display:inline-block;">{Math.round(parseInt(testacceleration)/255)}</P>
 
-            <A href="https://www.desmos.com/calculator/xqnqpahn8o">Desmos</A>
+            <Button href="https://www.desmos.com/calculator/xqnqpahn8o" target="_blank">Desmos</Button>
         </div>
     </Modal>
 </Footer>

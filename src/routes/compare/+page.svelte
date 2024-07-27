@@ -210,9 +210,9 @@
                             {#each selections as selection, i}
                                 <TableBodyCell>
                                     {#if data[i].link.includes("https://")}
-                                        <A href="{data[i].link}">Shop</A>
+                                        <Button href="{data[i].link}" target="_blank">Shop</Button>
                                     {:else}
-                                        <A href="https://{data[i].link}">Shop</A>
+                                        <Button href="https://{data[i].link}" target="_blank">Shop</Button>
                                     {/if}
                                 </TableBodyCell>
                             {/each}

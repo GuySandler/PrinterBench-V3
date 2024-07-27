@@ -6,11 +6,11 @@ require login to add V
 recalc points button V
 
 suggestions:
-more types
-open source toggle
-moddability input
-tooltip for features
-shop from leaderboard bug
+more types --needs cloud compatibility too
+open source toggle V
+moddability input (star)
+tooltip for features V
+shop from leaderboard bug V
 spesific bedslinger
 hotend
 max temp

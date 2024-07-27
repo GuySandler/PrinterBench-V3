@@ -156,14 +156,14 @@
         <svg id="speedTooltip" class="w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
         </svg>
-        <Popover class="w-64 text-sm font-light " title="Speed" triggeredBy="#speedTooltip">The max speed of laying down material.</Popover>
+        <Popover class="z-10 w-64 text-sm font-light " title="Speed" triggeredBy="#speedTooltip">The max speed of laying down material.</Popover>
         <Input bind:value={speed} autocomplete="autocomplete_off_randString"  id="speed" placeholder="600" />
 
         <Label class="inline-block" for="brand">Acceleration (according to offical website in mm/s)</Label>
         <svg id="accelerationTooltip" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
         </svg>
-        <Popover class="w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
+        <Popover class="z-10 w-64 text-sm font-light" title="Acceleration" triggeredBy="#accelerationTooltip">The max movement speed, does not really matter in terms of printing speed.</Popover>
         <Input bind:value={acceleration} autocomplete="autocomplete_off_randString"  id="brand" placeholder="20000" />
 
         <div style="display:inline-block">
@@ -186,7 +186,7 @@
                 <svg id="ZOffsetTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
-                <Popover class="w-64 text-sm font-light " title="Auto Z offset" triggeredBy="#ZOffsetTooltip">Some kind of mechanism that automatically gets the appropriate distance between the nozzle and the bed for the first layer</Popover>
+                <Popover class="z-10 w-64 text-sm font-light " title="Auto Z offset" triggeredBy="#ZOffsetTooltip">Some kind of mechanism that automatically gets the appropriate distance between the nozzle and the bed for the first layer.</Popover>
             </Toggle>
 
             <div class="spacer" />
@@ -196,21 +196,49 @@
                 <svg id="BedLevelTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
-                <Popover class="w-64 text-sm font-light " title="Auto Bed Leveling" triggeredBy="#BedLevelTooltip">The bed isn't always flat so this mechanism helps get the offsets from diffrent positions of the bed to fix it</Popover>
+                <Popover class="z-10 w-64 text-sm font-light " title="Auto Bed Leveling" triggeredBy="#BedLevelTooltip">The bed isn't always flat so this mechanism helps get the offsets from diffrent positions of the bed to fix it.</Popover>
             </Toggle>
 
             <div class="spacer" />
-            <Toggle bind:checked={powerLossRecovery}>Power Loss Recovery</Toggle>
+
+            <Toggle bind:checked={powerLossRecovery}>
+                Power Loss Recovery
+                <svg id="PowerLossTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="z-10 w-64 text-sm font-light " title="Power Loss Recovery" triggeredBy="#PowerLossTooltip">Allows printer to continue a print if the power suddenly cuts out.</Popover>
+            </Toggle>
+
             <div class="spacer" />
-            <Toggle bind:checked={filamentRunOutSensor}>Filament Run-out Sensor</Toggle>
+
+            <Toggle bind:checked={filamentRunOutSensor}>
+                Filament Run-out Sensor
+                <svg id="RunoutTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="z-10 w-64 text-sm font-light " title="Filament Run-out Sensor" triggeredBy="#RunoutTooltip">Detects if there is no more filament and pauses.</Popover>
+            </Toggle>
+
             <div class="spacer" />
+
             <Toggle bind:checked={openSource}>Open Source</Toggle>
         </div>
         <div style="display:inline-block;border-right:1px solid gray;margin-left:15px;padding-right:15px">
+
             <Toggle bind:checked={airPurifier}>Air Purifier</Toggle>
+
             <div class="spacer" />
-            <Toggle bind:checked={inputShaping}>Input Shaping</Toggle>
+
+            <Toggle bind:checked={inputShaping}>
+                Input Shaping
+                <svg id="InputShapingTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="z-10 w-64 text-sm font-light " title="Input Shaping" triggeredBy="#InputShapingTooltip">A mechanism that adjusts the motion of the printer to reduce/compensate vibrations and improve print quality.</Popover>
+            </Toggle>
+
             <div class="spacer" />
+
             <Toggle bind:checked={camera}>Camera</Toggle>
             <div class="spacer" />
             <Toggle bind:checked={multicolor}>multicolor option</Toggle>
@@ -222,7 +250,13 @@
             <div class="spacer" />
             <Toggle bind:checked={touchscreen}>Touchscreen</Toggle>
             <div class="spacer" />
-            <Toggle bind:checked={enclosure}>Enclosure</Toggle>
+            <Toggle bind:checked={enclosure}>
+                Enclosure
+                <svg id="EnclosureTooltip" style="margin-left:5px" class="inline-block w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <Popover class="z-10 w-64 text-sm font-light " title="EnclosureTooltip" triggeredBy="#EnclosureTooltip">Some printers come with enclosures allowing you to print materials like ABS</Popover>
+            </Toggle>
         </div>
         {#if multicolor}
             <Label for="brand">Multicolor Price (cheapest in usd)</Label>

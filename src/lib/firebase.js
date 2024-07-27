@@ -299,7 +299,8 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
         // console.log(order)
         else if  (order == "speed") returnData.sort((a, b) => b.speed - a.speed);
         else if (order == "points") returnData.sort((a, b) => b.points - a.points);
-        else if (order == "price") returnData.sort((a, b) => b.price - a.price);
+        else if (order == "priceH") returnData.sort((a, b) => b.price - a.price);
+        else if (order == "priceL") returnData.sort((a, b) => a.price - b.price);
         // console.log(returnData);
         if (name != "") {
             returnData = returnData.filter(printer => printer.name.toLowerCase().includes(name.toLowerCase()));

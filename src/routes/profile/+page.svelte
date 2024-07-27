@@ -1,5 +1,5 @@
 <script>
-    import { P, Card, Spinner, Modal, Input, Tabs, TabItem, TableHeadCell, TableHead, Table, TableBodyRow, TableBody, TableBodyCell, Label, Range, Textarea, Button, Avatar } from "flowbite-svelte";
+    import { P, Card, Spinner, Modal, Input, Tabs, TabItem, TableHeadCell, A, TableHead, Table, TableBodyRow, TableBody, TableBodyCell, Label, Range, Textarea, Button, Avatar } from "flowbite-svelte";
     import { GetUserFavs, getSubCollection, GetLeaderboard, AddReview, GetReviews } from "$lib/firebase";
     import { profileImg, profileName, profileFavs, profileUid, profileImportant } from "../../stores";
     import StarRating from "svelte-star-rating";
@@ -8,7 +8,7 @@
     import { inject } from '@vercel/analytics';
     
     inject({ mode: dev ? 'development' : 'production' });
-    
+
     let favs = [];
     let review = "";
     let rating = 2.5;
@@ -149,10 +149,6 @@
                                     <P style="text-align:center" size="sm">{GotData.sizex} x {GotData.sizey} x {GotData.sizez}</P>
                                 </Card>
                                 <Card style="width:155px;height:100px;display:inline-block">
-                                    <P style="text-align:center" size="2xl">Accel</P>
-                                    <P style="text-align:center" size="lg">{GotData.acceleration}mm/s</P>
-                                </Card>
-                                <Card style="width:155px;height:100px;display:inline-block">
                                     <P style="text-align:center" size="2xl">Points</P>
                                     <P style="text-align:center" size="lg">{GotData.points}</P>
                                 </Card>
@@ -225,7 +221,12 @@
                         </TabItem>
                     </Tabs>
                     <svelte:fragment slot="footer">
-                        <a href={"https://"+GotData.link}>Shop</a>
+                        {#if GotData.link.includes("https://")}
+                            <Button href="{GotData.link}" target="_blank">Shop</Button>
+                        {:else}
+                            <Button href="https://{GotData.link}" target="_blank">Shop</Button>
+                        {/if}
+                        <!-- <a href={"https://"+GotData.link}>Shop</a> -->
                         <Button color="alternative" on:click={() => modal = false}>Close</Button>
                     </svelte:fragment>
                 </Modal>
