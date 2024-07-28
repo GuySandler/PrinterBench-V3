@@ -45,7 +45,7 @@
                 <NavLi href="/add">Add Printer</NavLi>
                 <NavLi href="/compare">Compare</NavLi>
                 {#if profileImage != ""}<NavLi href="/profile">My Profile</NavLi>{/if}
-                <Toggle color="red" bind:checked={expert} disabled class="cursor-not-allowed">Expert Mode (WIP)</Toggle>
+                <!-- <Toggle color="red" bind:checked={expert} disabled class="cursor-not-allowed">Expert Mode (WIP)</Toggle> -->
             </NavUl>
         </NavContainer>
     </Navbar>

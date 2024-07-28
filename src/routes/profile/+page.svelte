@@ -106,8 +106,8 @@
                 {:then data}
                     <div>
                         <button on:click={() => LeaderBoardClick(data[0].name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
-                            <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
-                                <P style="font-size:1vw">#{i+1}</P>
+                            <div style="float:left;margin-right:5px;width:2vw;height:2vw;min-width:20px;min-height:20px;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                                <P style="font-size: calc(5px + 1vw);">#{i+1}</P>
                             </div>
                             <P style="float:left;">{data[0].name}</P>
                             <!-- <div style="float:right;">

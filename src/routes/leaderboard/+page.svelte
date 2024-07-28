@@ -271,8 +271,8 @@
             {#each GotData as item, i}
                 <div>
                     <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
-                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
-                            <P style="font-size:1vw">#{i+1}</P>
+                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;min-width:20px;min-height:20px;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                            <P style="font-size: calc(5px + 1vw);">#{i+1}</P>
                         </div>
                         <P style="float:left;">{item.name}</P>
                         <!-- <div style="float:right;">
@@ -296,8 +296,8 @@
             {#each GotData as item, i}
                 <div>
                     <button on:click={() => LeaderBoardClick(item.name)} class="LeaderBoardElement bg-gray-300 dark:bg-gray-600 hover:bg-gray-500 hover:dark:bg-gray-900 border-2 border-black dark:border-white">
-                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
-                            <P style="font-size:1vw">#{i+1}</P>
+                        <div style="float:left;margin-right:5px;width:2vw;height:2vw;min-width:20px;min-height:20px;" class="centerFlexBox bg-gray-400 dark:bg-gray-900 border-2 border-black dark:border-white">
+                            <P style="font-size: calc(5px + 1vw);">#{i+1}</P>
                         </div>
                         <P style="float:left;">{item.name}</P>
                         <!-- <div style="float:right;">
@@ -455,42 +455,102 @@
     <Button align="center" on:click={() => HowPointCalc = true}>How are points calculated?</Button>
     <Modal title="How are points calculated?" bind:open={HowPointCalc} size="lg">
         <div style="overflow-y:auto;">
-            <P align="center" size="sm">Auto Z Offset = 40 | It's kind of important nowdays</P>
-            <P align="center" size="sm">Auto Bed Leveling = 40 | Necessity</P>
-            <P align="center" size="sm">Power Loss Recovery = 30 | Necessity but most have it</P>
-            <P align="center" size="sm">Filament Run Out Sensor = 25 | You can live without it, but it's important</P>
-            <P align="center" size="sm">Air Purifier = 20 | Nice feature a lot don't have</P>
-            <P align="center" size="sm">Input Shaping = 25 | You can live without it, but it's important</P>
-            <P align="center" size="sm">Camera = 20 | Nice feature a lot don't have</P>
-            <P align="center" size="sm">Wifi = 20 | Somewhat a necessity nowdays</P>
-            <P align="center" size="sm">Remote Access = 20 | Somewhat a necessity nowdays</P>
-            <P align="center" size="sm">Touchscreen = 20 | Somewhat a necessity nowdays</P>
-            <P align="center" size="sm">Enclosure = 20 | Nice feature a lot don't have</P>
             <P align="center" size="sm">Open Source = 25 | Nice to have but most are not</P>
 
-            <P align="center">Price: (110/(price+5))*100</P>
+            <Table>
+                <TableHead>
+                  <TableHeadCell>Feature</TableHeadCell>
+                  <TableHeadCell>Points</TableHeadCell>
+                  <TableHeadCell>Reason</TableHeadCell>
+                </TableHead>
+                <TableBody tableBodyClass="divide-y">
+                  <TableBodyRow>
+                    <TableBodyCell>Auto Z Offset</TableBodyCell>
+                    <TableBodyCell>40</TableBodyCell>
+                    <TableBodyCell>It's kind of important nowdays</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Auto Bed Leveling</TableBodyCell>
+                    <TableBodyCell>40</TableBodyCell>
+                    <TableBodyCell>Necessity</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Power Loss Recovery</TableBodyCell>
+                    <TableBodyCell>30</TableBodyCell>
+                    <TableBodyCell>Necessity but most have it</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Filament Run Out Sensor</TableBodyCell>
+                    <TableBodyCell>25</TableBodyCell>
+                    <TableBodyCell>You can live without it, but it's important</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Air Purifier</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Nice feature a lot don't have</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Input Shaping</TableBodyCell>
+                    <TableBodyCell>25</TableBodyCell>
+                    <TableBodyCell>You can live without it, but it's important</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Camera</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Nice feature a lot don't have</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Wifi</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Somewhat a necessity nowdays</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Remote Access</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Somewhat a necessity nowdays</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Touchscreen</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Somewhat a necessity nowdays</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Enclosure</TableBodyCell>
+                    <TableBodyCell>20</TableBodyCell>
+                    <TableBodyCell>Nice feature a lot don't have</TableBodyCell>
+                  </TableBodyRow>
+                  <TableBodyRow>
+                    <TableBodyCell>Open Source</TableBodyCell>
+                    <TableBodyCell>25</TableBodyCell>
+                    <TableBodyCell>Nice to have but most are not</TableBodyCell>
+                  </TableBodyRow>
+                </TableBody>
+            </Table>
+
+            <P align="center" style="margin-top:15px">Price: (110/(price+5))*100</P>
             <Label>Try it</Label>
             <Input bind:value={testprice} type="number" style="display:inline-block;width:15vw"/>
             <P style="display:inline-block;">{(110/(parseInt(testprice)+5))*100}</P>
 
-            <P align="center">Speed: (0.025*log(speed)*(2+speed)+10)/2 (only /2 for script)</P>
+            <P align="center" style="margin-top:15px">Speed: (0.025*log(speed)*(2+speed)+10)/2 (only /2 for script)</P>
             <Label>Try it (mm/s)</Label>
             <Input bind:value={testspeed} type="number" style="display:inline-block;width:15vw"/>
             <P style="display:inline-block;">{(0.025*Math.log(parseInt(testspeed))*(2+parseInt(testspeed))+10)/2}</P>
 
-            <P align="center">Size: round(∛(volume)/8.5)</P>
+            <P align="center" style="margin-top:15px">Size: round(∛(volume)/8.5)</P>
             <Label>Try it (mm)</Label>
             <Input bind:value={testsizex} type="number" style="display:inline-block;width:10vw"/>
             <Input bind:value={testsizey} type="number" style="display:inline-block;width:10vw"/>
             <Input bind:value={testsizez} type="number" style="display:inline-block;width:10vw"/>
             <P style="display:inline-block;">{Math.round(Math.cbrt((parseInt(testsizex)*parseInt(testsizey)*parseInt(testsizez)))/8.5)}</P>
 
-            <P align="center">acceleration = round(acceleration/255)</P>
+            <P align="center" style="margin-top:15px">acceleration = round(acceleration/255)</P>
             <Label>Try it (mm/s)</Label>
             <Input bind:value={testacceleration} type="number" style="display:inline-block;width:10vw"/>
             <P style="display:inline-block;">{Math.round(parseInt(testacceleration)/255)}</P>
 
-            <Button href="https://www.desmos.com/calculator/xqnqpahn8o" target="_blank">Desmos</Button>
+            <br>
+            <Button style="margin-top:15px" href="https://www.desmos.com/calculator/xqnqpahn8o" target="_blank">Desmos</Button>
         </div>
     </Modal>
 </Footer>

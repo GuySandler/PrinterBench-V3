@@ -4,7 +4,7 @@
     import { Confetti } from "svelte-confetti"
     import { profileImg, expertMode } from "../../stores";
     import { test, addData } from "$lib/firebase"
-    import {  } from "../stores";
+    import {  } from "../../stores";
     let expert = false;
     expertMode.subscribe((value) => {
         expert = value;
@@ -61,7 +61,8 @@
                 multicolor: multicolor,
                 multicolorPrice: Math.round(parseInt(multicolorPrice)),
                 points: CalculatePoints(),
-                diameter: type == "delta" ? sized : 0
+                diameter: type == "delta" ? sized : 0,
+                plugnplay: plugnplay
             });
             console.log(data);
 
@@ -98,6 +99,7 @@
     let multicolorPrice = "";
     let enclosure = false;
     let openSource = false;
+    let plugnplay = false;
 
     let config = {
         readOnly: false,
@@ -256,7 +258,9 @@
 
             <Toggle bind:checked={camera}>Camera</Toggle>
             <div class="spacer" />
-            <Toggle bind:checked={multicolor}>multicolor option</Toggle>
+            <Toggle bind:checked={multicolor}>Multicolor option</Toggle>
+            <div class="spacer" />
+            <Toggle bind:checked={plugnplay}>Plug & Play</Toggle>
         </div>
         <div style="display:inline-block;margin-left:15px;">
             <Toggle bind:checked={wifi}>Wifi</Toggle>

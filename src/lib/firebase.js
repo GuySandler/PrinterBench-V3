@@ -263,6 +263,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
             data[0].rating = tempdata.reduce((acc, val) => acc + val, 0) / tempdata.length;
             // }
         }
+        if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
         return data[0];
     }
     else {
@@ -308,7 +309,7 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
         if (brand != "") {
             returnData = returnData.filter(printer => printer.brand.toLowerCase().includes(brand.toLowerCase()));
         }
-        // if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
+        if (returnData.length == 0) {console.log("error");throw new Error('No Docs Found');}
         // console.log(returnData);
         return returnData;
     }

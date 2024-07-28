@@ -16,13 +16,19 @@
     }
     let compareBool = false;
     async function compare() {
-        compareBool = true;
-        let data = [];
-        for (let i = 0; i < selections.length; i++) {
-            data.push(await GetLeaderboard("", selections[i]));
+        try {
+                compareBool = true;
+            let data = [];
+            for (let i = 0; i < selections.length; i++) {
+                data.push(await GetLeaderboard("", selections[i]));
+            }
+            console.log(data);
+            return data;
         }
-        console.log(data);
-        return data;
+        catch (error) {
+            console.log(error);
+            throw new Error("Error");
+        }
     }
     async function GetPrinters() {
         printers = await GetDashboardDocs("approved")
@@ -61,8 +67,8 @@
     {:catch}
         <P style="color:red">Error</P>
     {/await}
-    <Button style="margin:10px" on:click={compare}>Compare</Button>
-    {#if compareBool}
+    <!-- <Button style="margin:10px" on:click={compare}>Compare</Button> -->
+    {#if selections.every(item => item !== "")}
         {#await compare()}
             <Spinner size={8} />
         {:then data}
@@ -118,7 +124,11 @@
                         <TableBodyRow>
                             <TableBodyCell>Size (mm)</TableBodyCell>
                             {#each selections as selection, i}
-                                <TableBodyCell>{data[i].sizex} x {data[i].sizey} x {data[i].sizez}</TableBodyCell>
+                                {#if data[i].type != "delta"}
+                                    <TableBodyCell>{data[i].sizex} x {data[i].sizey} x {data[i].sizez}</TableBodyCell>
+                                {:else}
+                                    <TableBodyCell>{data[i].diameter} x {data[i].sizez}</TableBodyCell>
+                                {/if}
                             {/each}
                         </TableBodyRow>
                         <TableBodyRow>
@@ -191,6 +201,18 @@
                             <TableBodyCell>Wifi</TableBodyCell>
                             {#each selections as selection, i}
                                 <TableBodyCell>{data[i].wifi}</TableBodyCell>
+                            {/each}
+                        </TableBodyRow>
+                        <TableBodyRow>
+                            <TableBodyCell>Open Source</TableBodyCell>
+                            {#each selections as selection, i}
+                                <TableBodyCell>{data[i].opensource}</TableBodyCell>
+                            {/each}
+                        </TableBodyRow>
+                        <TableBodyRow>
+                            <TableBodyCell>Plug & Play</TableBodyCell>
+                            {#each selections as selection, i}
+                                <TableBodyCell>{data[i].plugnplay}</TableBodyCell>
                             {/each}
                         </TableBodyRow>
                         <TableBodyRow>
