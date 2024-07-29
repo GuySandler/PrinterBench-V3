@@ -124,6 +124,7 @@ export async function signIn() {
             await setDoc(doc(db, "users", uid), {
                 favorites: [],
                 isImportant: false,
+                name: displayName,
             });
             console.log("User doc made");
             UserFavs = [];
