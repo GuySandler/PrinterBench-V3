@@ -452,7 +452,7 @@
     {/await}
 </div>
 <Footer>
-    <Button align="center" on:click={() => HowPointCalc = true}>How are points calculated?</Button>
+    <Button align="center" on:click={() => HowPointCalc = true} style="margin-bottom:10px;">How are points calculated?</Button>
     <Modal title="How are points calculated?" bind:open={HowPointCalc} size="lg">
         <div style="overflow-y:auto;">
             <P align="center" size="sm">Open Source = 25 | Nice to have but most are not</P>

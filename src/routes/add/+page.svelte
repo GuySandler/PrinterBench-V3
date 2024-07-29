@@ -62,7 +62,8 @@
                 multicolorPrice: Math.round(parseInt(multicolorPrice)),
                 points: CalculatePoints(),
                 diameter: type == "delta" ? sized : 0,
-                plugnplay: plugnplay
+                plugnplay: plugnplay,
+                preBuilt: preBuilt,
             });
             console.log(data);
 
@@ -100,6 +101,7 @@
     let enclosure = false;
     let openSource = false;
     let plugnplay = false;
+    let preBuilt = false;
 
     let config = {
         readOnly: false,
@@ -276,6 +278,8 @@
                 </svg>
                 <Popover class="z-10 w-64 text-sm font-light " title="EnclosureTooltip" triggeredBy="#EnclosureTooltip">Some printers come with enclosures allowing you to print materials like ABS</Popover>
             </Toggle>
+            <div class="spacer" />
+            <Toggle bind:checked={preBuilt}>Pre-Built</Toggle>
         </div>
         {#if multicolor}
             <Label for="brand">Multicolor Price (cheapest in usd)</Label>

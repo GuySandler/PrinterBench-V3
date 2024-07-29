@@ -1,5 +1,5 @@
 <script>
-    import { P, Card } from "flowbite-svelte";
+    import { P, Card, Footer, Button } from "flowbite-svelte";
     // import { userRulesTest } from "$lib/firebase";
     import logo from '$lib/images/printerbench.svg';
     import { expertMode } from "../stores";
@@ -31,3 +31,6 @@
     <!-- <P>{test}</P> -->
 </div>
 <!-- <button on:click={userRulesTest}>test</button> -->
+<Footer>
+    <Button href="https://github.com/GuySandler/PrinterBench-V3/" target="_blank" align="center" color="alternative">Github</Button>
+</Footer>
