@@ -59,24 +59,30 @@
     let inputs = [];
     let progress = 0;
     let stage = 0;
-    let placeholdervar = 0;
+    let placeholdervar;
     let placeholdervarselect = "";
-    let placeholdervarlist = [0,0,0];
+    let placeholdervarlist = [];
     let done = false;
 
     function next(input, inputnum, type) {
-        if (stage+1 == survey.length) {
-            done = true;
+        if (type != "multiselect" && placeholdervarselect == "" && placeholdervar == null && placeholdervarlist.length == 0) {
+            return 0;
         }
-        stage++;
+
         if (type == "multiselect") {
             inputs.push(placeholdervarlist);
         }
         else if (inputnum > 1) {
             if (placeholdervarselect != "") {
-                placeholdervarlist.push(placeholdervarselect);
+                inputs.push(placeholdervarselect);
+                // console.log("did an if");
+                // console.log(placeholdervarlist);
             }
-            else inputs.push(placeholdervarlist);
+            else {
+                if (placeholdervarlist.length == 0) return 0;
+                inputs.push(placeholdervarlist)
+                // console.log("did an else");
+            };
         }
         else {
             if (placeholdervarselect != "") {
@@ -84,8 +90,14 @@
             }
             else inputs.push(input);
         }
-        placeholdervar = 0;
-        placeholdervarlist = [0,0,0];
+
+        if (stage+1 == survey.length) {
+            done = true;
+        }
+        stage++;
+
+        placeholdervar = null;
+        placeholdervarlist = [];
         progress = (stage / survey.length) * 100;
         placeholdervarselect = "";
         // inputs.push(input);

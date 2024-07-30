@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc, updateDoc} from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDoc, query, deleteDoc, getDocs, setDoc, updateDoc, where} from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { profileImg, profileName, profileUid, profileFavs, profileImportant } from '../stores.js';
 import { PUBLIC_VITE_APIKEY } from '$env/static/public';
@@ -404,13 +404,125 @@ export async function RecalcPoints(name, index) {
     alert("Points recalculated")
 }
 export async function UltimateForm(inputs) {
+    // transalte inputs
+    // budget
+    const budget = inputs[0];
+    // build volume
+    let sizex, sizey, sizez;
+    let maxx, maxy, maxz, minx, miny, minz;
+    if (typeof inputs[1] == "array") {
+        sizex = inputs[1][0];
+        sizey = inputs[1][1];
+        sizez = inputs[1][2];
+    } else {
+        if (inputs[1] == "nocare") {
+            maxx = 30000;
+            maxy = 30000;
+            maxz = 30000;
+            minx = 0;
+            miny = 0;
+            minz = 0;
+        }
+        else if (inputs[1] == "small") {
+            maxx = 180;
+            maxy = 180;
+            maxz = 180;
+            minx = 0;
+            miny = 0;
+            minz = 0;
+        }
+        else if (inputs[1] == "medium") {
+            maxx = 220;
+            maxy = 220;
+            maxz = 220;
+            minx = 181;
+            miny = 181;
+            minz = 181;
+        }
+        else if (inputs[1] == "large") {
+            maxx = 300;
+            maxy = 300;
+            maxz = 300;
+            minx = 221;
+            miny = 221;
+            minz = 221;
+        }
+    }
+    // speed
+    if (typeof inputs[2] == "array") {
+        const speed = inputs[2];
+    } else {
+        if (inputs[2] == "nocare") {
+            const speed = 0;
+        }
+        else if (inputs[2] == "slow") {
+            const maxspeed = 120;
+        }
+        else if (inputs[2] == "medium") {
+            const maxspeed = 375;
+            const minspeed = 121;
+        }
+        else if (inputs[2] == "fast") {
+            const minspeed = 376;
+        }
+    }
+    // plug&play
+    if (inputs[3] == "true") {
+        const plugplay = true;
+    }
+    else if (inputs[3] == "false") {
+        const plugplay = false;
+    }
+    else if (inputs[3] == "nocare") {
+        const plugplay = 0;
+    }
+    const features = inputs[4];
+
     // console.log(await getSubCollection("approved", "Mk3s+", "cases"));
     const printers = await getCollections("approved", "id");
     // console.log(printers);
     let data = [];
+
+    const Ref1 = collection(db, "approved"); // "approved"
+
+    // querySnapshot.forEach((doc) => {
+    //     data.push(doc.data());
+    // });
+
     for (let i of printers) {
-        data.push(await getSubCollection("approved", i, "cases"))
+        let Ref2 = doc(Ref1, i); // mk3s+
+        let Ref3 = collection(Ref2, "cases"); // cases
+        // const querySnapshot = await getDocs(Ref3);
+        let queryConstraints = [
+            where('price', '<=', budget)
+        ];
+
+        if (Array.isArray(inputs[1])) {
+            queryConstraints.push(where('sizex', '<=', sizex+50));
+            queryConstraints.push(where('sizex', '>=', sizex-50));
+            queryConstraints.push(where('sizey', '<=', sizey+50));
+            queryConstraints.push(where('sizey', '>=', sizey-50));
+            queryConstraints.push(where('sizez', '<=', sizez+50));
+            queryConstraints.push(where('sizez', '>=', sizez-50));
+        }
+        else {
+            queryConstraints.push(where('sizex', '<=', maxx+50));
+            queryConstraints.push(where('sizex', '>=', minx-50));
+            queryConstraints.push(where('sizey', '<=', maxy+50));
+            queryConstraints.push(where('sizey', '>=', miny-50));
+            queryConstraints.push(where('sizez', '<=', maxz+50));
+            queryConstraints.push(where('sizez', '>=', minz-50));
+        }
+
+        const querySnapshot = query(Ref3, ...queryConstraints);
+        // data.push(await getSubCollection("approved", i, "cases"))
+        let tempdata = [];
+        querySnapshot.forEach((doc) => {
+            tempdata.push(doc.data());
+        });
+        data.push(tempdata[0]);
     }
+
     if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
     // return data;
     console.log(data);
