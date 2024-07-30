@@ -69,7 +69,7 @@ export async function getCollections(OuterCollectionName, type) {
             // console.log(doc.id, " => ", doc.data());
             if (type == "id") {data.push(doc.id);}
             if (type == "data") {data.push(doc.data());}
-            data.push({data: doc.data(), id: doc.id});
+            // data.push({data: doc.data(), id: doc.id});
     });
     return data;
 }
@@ -403,3 +403,16 @@ export async function RecalcPoints(name, index) {
     });
     alert("Points recalculated")
 }
+export async function UltimateForm(inputs) {
+    // console.log(await getSubCollection("approved", "Mk3s+", "cases"));
+    const printers = await getCollections("approved", "id");
+    // console.log(printers);
+    let data = [];
+    for (let i of printers) {
+        data.push(await getSubCollection("approved", i, "cases"))
+    }
+    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
+    // return data;
+    console.log(data);
+}
+// console.log(await UltimateForm("h"));

@@ -26,3 +26,4 @@ advanced mode:
 filter by price (spesific)
 survey
 how many people submited a case for a printer
+affiliate link priority & menu
