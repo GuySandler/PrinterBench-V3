@@ -64,6 +64,7 @@
                 diameter: type == "delta" ? sized : 0,
                 plugnplay: plugnplay,
                 preBuilt: preBuilt,
+                opensource: openSource
             });
             console.log(data);
 

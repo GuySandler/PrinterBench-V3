@@ -404,127 +404,140 @@ export async function RecalcPoints(name, index) {
     alert("Points recalculated")
 }
 export async function UltimateForm(inputs) {
-    // transalte inputs
-    // budget
+    // translate inputs
     const budget = inputs[0];
+    
     // build volume
     let sizex, sizey, sizez;
     let maxx, maxy, maxz, minx, miny, minz;
-    if (typeof inputs[1] == "array") {
+    if (Array.isArray(inputs[1])) {
         sizex = inputs[1][0];
         sizey = inputs[1][1];
         sizez = inputs[1][2];
     } else {
-        if (inputs[1] == "nocare") {
-            maxx = 30000;
-            maxy = 30000;
-            maxz = 30000;
-            minx = 0;
-            miny = 0;
-            minz = 0;
-        }
-        else if (inputs[1] == "small") {
-            maxx = 180;
-            maxy = 180;
-            maxz = 180;
-            minx = 0;
-            miny = 0;
-            minz = 0;
-        }
-        else if (inputs[1] == "medium") {
-            maxx = 220;
-            maxy = 220;
-            maxz = 220;
-            minx = 181;
-            miny = 181;
-            minz = 181;
-        }
-        else if (inputs[1] == "large") {
-            maxx = 300;
-            maxy = 300;
-            maxz = 300;
-            minx = 221;
-            miny = 221;
-            minz = 221;
+        switch (inputs[1]) {
+            case "nocare":
+                maxx = 30000;
+                maxy = 30000;
+                maxz = 30000;
+                minx = 0;
+                miny = 0;
+                minz = 0;
+                break;
+            case "small":
+                maxx = 180;
+                maxy = 180;
+                maxz = 180;
+                minx = 0;
+                miny = 0;
+                minz = 0;
+                break;
+            case "medium":
+                maxx = 260;
+                maxy = 260;
+                maxz = 260;
+                minx = 181;
+                miny = 181;
+                minz = 181;
+                break;
+            case "large":
+                maxx = 300;
+                maxy = 300;
+                maxz = 300;
+                minx = 221;
+                miny = 221;
+                minz = 221;
+                break;
+            default:
+                throw new Error('Invalid size input');
         }
     }
+
     // speed
-    if (typeof inputs[2] == "array") {
-        const speed = inputs[2];
+    let speed, maxspeed, minspeed;
+    if (Array.isArray(inputs[2])) {
+        speed = inputs[2];
     } else {
-        if (inputs[2] == "nocare") {
-            const speed = 0;
-        }
-        else if (inputs[2] == "slow") {
-            const maxspeed = 120;
-        }
-        else if (inputs[2] == "medium") {
-            const maxspeed = 375;
-            const minspeed = 121;
-        }
-        else if (inputs[2] == "fast") {
-            const minspeed = 376;
+        switch (inputs[2]) {
+            case "nocare":
+                speed = 0;
+                break;
+            case "slow":
+                maxspeed = 120;
+                break;
+            case "medium":
+                maxspeed = 375;
+                minspeed = 121;
+                break;
+            case "fast":
+                minspeed = 376;
+                break;
+            default:
+                throw new Error('Invalid speed input');
         }
     }
+
     // plug&play
-    if (inputs[3] == "true") {
-        const plugplay = true;
+    let plugplay;
+    switch (inputs[3]) {
+        case "true":
+            plugplay = true;
+            break;
+        case "false":
+            plugplay = false;
+            break;
+        case "nocare":
+            plugplay = 0;
+            break;
+        default:
+            throw new Error('Invalid plug&play input');
     }
-    else if (inputs[3] == "false") {
-        const plugplay = false;
-    }
-    else if (inputs[3] == "nocare") {
-        const plugplay = 0;
-    }
+
     const features = inputs[4];
 
-    // console.log(await getSubCollection("approved", "Mk3s+", "cases"));
     const printers = await getCollections("approved", "id");
-    // console.log(printers);
     let data = [];
 
-    const Ref1 = collection(db, "approved"); // "approved"
-
-    // querySnapshot.forEach((doc) => {
-    //     data.push(doc.data());
-    // });
+    const Ref1 = collection(db, "approved");
 
     for (let i of printers) {
-        let Ref2 = doc(Ref1, i); // mk3s+
-        let Ref3 = collection(Ref2, "cases"); // cases
-        // const querySnapshot = await getDocs(Ref3);
+        let Ref2 = doc(Ref1, i);
+        let Ref3 = collection(Ref2, "cases");
+
         let queryConstraints = [
             where('price', '<=', budget)
         ];
 
         if (Array.isArray(inputs[1])) {
-            queryConstraints.push(where('sizex', '<=', sizex+50));
-            queryConstraints.push(where('sizex', '>=', sizex-50));
-            queryConstraints.push(where('sizey', '<=', sizey+50));
-            queryConstraints.push(where('sizey', '>=', sizey-50));
-            queryConstraints.push(where('sizez', '<=', sizez+50));
-            queryConstraints.push(where('sizez', '>=', sizez-50));
-        }
-        else {
-            queryConstraints.push(where('sizex', '<=', maxx+50));
-            queryConstraints.push(where('sizex', '>=', minx-50));
-            queryConstraints.push(where('sizey', '<=', maxy+50));
-            queryConstraints.push(where('sizey', '>=', miny-50));
-            queryConstraints.push(where('sizez', '<=', maxz+50));
-            queryConstraints.push(where('sizez', '>=', minz-50));
+            queryConstraints.push(where('sizex', '<=', sizex + 50));
+            queryConstraints.push(where('sizex', '>=', sizex - 50));
+            queryConstraints.push(where('sizey', '<=', sizey + 50));
+            queryConstraints.push(where('sizey', '>=', sizey - 50));
+            queryConstraints.push(where('sizez', '<=', sizez + 50));
+            queryConstraints.push(where('sizez', '>=', sizez - 50));
+        } else {
+            queryConstraints.push(where('sizex', '<=', maxx));
+            queryConstraints.push(where('sizex', '>=', minx));
+            queryConstraints.push(where('sizey', '<=', maxy));
+            queryConstraints.push(where('sizey', '>=', miny));
+            queryConstraints.push(where('sizez', '<=', maxz));
+            queryConstraints.push(where('sizez', '>=', minz));
         }
 
-        const querySnapshot = query(Ref3, ...queryConstraints);
-        // data.push(await getSubCollection("approved", i, "cases"))
+        const q = query(Ref3, ...queryConstraints);
+        const querySnapshot = await getDocs(q);
         let tempdata = [];
         querySnapshot.forEach((doc) => {
             tempdata.push(doc.data());
         });
-        data.push(tempdata[0]);
+        if (tempdata.length != 0) data.push(tempdata);
     }
 
-    if (data.length == 0) {console.log("error");throw new Error('No Docs Found');}
-    // return data;
-    console.log(data);
+    if (data.length == 0) {
+        console.log("error");
+        throw new Error('No Docs Found');
+    }
+    
+    console.log("Build Volume:", { maxx, minx, maxy, miny, maxz, minz });
+    console.log("Data:", data);
 }
-// console.log(await UltimateForm("h"));

@@ -152,4 +152,5 @@
         <Button style="margin:10px;" on:click={() => UltimateForm(inputs)}>Test Submit</Button>
     {/if}
     <!-- <P>{survey[stage].type}</P> -->
+    <Button on:click={() => UltimateForm([400, "medium", "fast", "true", ["feature1", "feature2"]])}>Test</Button>
 </div>
