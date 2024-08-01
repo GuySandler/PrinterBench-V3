@@ -219,12 +219,17 @@ export async function Approve(name, data) {
     alert("approved")
 }
 export async function GetReviews(data) {
-    let GotReviews;
-    GotReviews = await getSubCollection("approved", data.name, "reviews")
-    // console.log(GotReviews);
-    // important first
-    GotReviews.sort((a, b) => b.isImportant - a.isImportant);
-    // console.log(GotReviews);
+    try {
+        let GotReviews;
+        GotReviews = await getSubCollection("approved", data.name, "reviews")
+        // console.log(GotReviews);
+        // important first
+        GotReviews.sort((a, b) => b.isImportant - a.isImportant);
+        // console.log(GotReviews);
+    } catch (error) {
+        console.log("Error getting documents: ", error);
+        throw new Error('No Docs Found');
+    }
     return GotReviews;
 }
 export async function AddReview(data, review) {
@@ -405,7 +410,7 @@ export async function RecalcPoints(name, index) {
 }
 export async function UltimateForm(inputs) {
     // translate inputs
-    const budget = inputs[0];
+    const budget = parseInt(inputs[0]);
     
     // build volume
     let sizex, sizey, sizez;
@@ -454,27 +459,27 @@ export async function UltimateForm(inputs) {
     }
 
     // speed
-    let speed, maxspeed, minspeed;
-    if (Array.isArray(inputs[2])) {
-        speed = inputs[2];
-    } else {
-        switch (inputs[2]) {
-            case "nocare":
-                speed = 0;
-                break;
-            case "slow":
-                maxspeed = 120;
-                break;
-            case "medium":
-                maxspeed = 375;
-                minspeed = 121;
-                break;
-            case "fast":
-                minspeed = 376;
-                break;
-            default:
-                throw new Error('Invalid speed input');
-        }
+    let maxspeed, minspeed;
+    switch (inputs[2]) {
+        case "nocare":
+            maxspeed = 30000;
+            minspeed = 0;
+            break;
+        case "slow":
+            maxspeed = 120;
+            minspeed = 0;
+            break;
+        case "medium":
+            maxspeed = 400;
+            minspeed = 121;
+            break;
+        case "fast":
+            minspeed = 401;
+            maxspeed = 30000;
+            break;
+        default:
+            minspeed = parseInt(inputs[2]) - 30;
+            maxspeed = parseInt(inputs[2]) + 30;
     }
 
     // plug&play
@@ -524,6 +529,13 @@ export async function UltimateForm(inputs) {
             queryConstraints.push(where('sizez', '>=', minz));
         }
 
+        queryConstraints.push(where('speed', '<=', maxspeed));
+        queryConstraints.push(where('speed', '>=', minspeed));
+
+        if (plugplay !== 0) {
+            queryConstraints.push(where('plugplay', '==', plugplay));
+        }
+
         const q = query(Ref3, ...queryConstraints);
         const querySnapshot = await getDocs(q);
         let tempdata = [];
@@ -537,7 +549,8 @@ export async function UltimateForm(inputs) {
         console.log("error");
         throw new Error('No Docs Found');
     }
-    
-    console.log("Build Volume:", { maxx, minx, maxy, miny, maxz, minz });
+
+    // console.log("Build Volume:", { maxx, minx, maxy, miny, maxz, minz });
     console.log("Data:", data);
+    return data;
 }
