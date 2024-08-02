@@ -1,6 +1,6 @@
 <script>
     import { Input, P, Button, Progressbar, Select, MultiSelect, Spinner, Modal, Tabs, TabItem, Card, Avatar, Popover, Table, TableBodyRow, TableHead, TableHeadCell, TableBody, TableBodyCell } from 'flowbite-svelte';
-    import { UltimateForm, GetLeaderboard, GetReviews } from '$lib/firebase'
+    import { UltimateForm, GetLeaderboard, GetReviews, getSubCollection } from '$lib/firebase'
     import { dev } from '$app/environment';
     import { inject } from '@vercel/analytics';
     import StarRating from 'svelte-star-rating';
@@ -345,6 +345,11 @@
                     {/if}
                     <!-- <A href={"https://"+GotData.link}>Shop</A> -->
                     <Button color="alternative" on:click={() => modal = false}>Close</Button>
+                    {#await getSubCollection("approved", GotData.name, "cases")}
+                        <Spinner size={8} />
+                    {:then data}
+                        <P align="right">This Printer Has {data.length} Submittion(s)</P>
+                    {/await}
                 </svelte:fragment>
             </Modal>
         {:catch error}

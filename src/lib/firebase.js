@@ -274,11 +274,11 @@ export async function GetLeaderboard(order, printer = "", type = "all", features
     }
     else {
         const q = query(collection(db, "approved"));
-        console.log(q);
+        // console.log(q);
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             data.push(doc.id);
-            console.log(doc.id);
+            // console.log(doc.id);
         });
         // console.log(data);
         // console.log(type);
@@ -534,6 +534,10 @@ export async function UltimateForm(inputs) {
 
         if (plugplay !== 0) {
             queryConstraints.push(where('plugplay', '==', plugplay));
+        }
+
+        for (let feature of features) {
+            queryConstraints.push(where(feature, '==', true));
         }
 
         const q = query(Ref3, ...queryConstraints);

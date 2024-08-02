@@ -2,7 +2,7 @@
     import { Label, Input, Button, Select, Toggle, Range, P, Popover } from "flowbite-svelte";
     import StarRating from 'svelte-star-rating';
     import { Confetti } from "svelte-confetti"
-    import { profileImg, expertMode } from "../../stores";
+    import { profileImg, expertMode, profileImportant } from "../../stores";
     import { test, addData } from "$lib/firebase"
     import {  } from "../../stores";
     let expert = false;
@@ -64,7 +64,9 @@
                 diameter: type == "delta" ? sized : 0,
                 plugnplay: plugnplay,
                 preBuilt: preBuilt,
-                opensource: openSource
+                opensource: openSource,
+                affiliateLink: affiliateLink,
+                channelName: channelName
             });
             console.log(data);
 
@@ -103,6 +105,8 @@
     let openSource = false;
     let plugnplay = false;
     let preBuilt = false;
+    let affiliateLink = "";
+    let channelName = "";
 
     let config = {
         readOnly: false,
@@ -135,6 +139,10 @@
             isLoggedIn = true;
         }
     });
+    let isImportant = false;
+    profileImportant.subscribe((value) => {
+        isImportant = value;
+    });
 </script>
 <style>
   .spacer {
@@ -162,9 +170,15 @@
             <!-- <option value=resin>resin</option> -->
         </Select>
 
-        <Label for="link">Printer Brand</Label>
-        <Input bind:value={link} autocomplete="autocomplete_off_randString"  id="link" placeholder="https://www.prusa3d.com/product/original-prusa-mk4/" />
-
+        {#if !isImportant}
+            <Label for="link">Shop Link</Label>
+            <Input bind:value={link} autocomplete="autocomplete_off_randString"  id="link" placeholder="https://www.prusa3d.com/product/original-prusa-mk4/" />
+        {:else}
+            <Label for="link">Your Affiliate Link (or shop)</Label>
+            <Input bind:value={affiliateLink} autocomplete="autocomplete_off_randString"  id="link" placeholder="https://www.prusa3d.com/product/original-prusa-mk4/" />
+            <Label for="referal">Your Channel Name</Label>
+            <Input bind:value={channelName} autocomplete="autocomplete_off_randString"  id="referal" placeholder="Prusa3d" />
+        {/if}
         <Label class="inline-block" for="brand">Speed (If you can't find it google)</Label>
         <svg id="speedTooltip" class="w-6 h-6 text-gray-800 dark:text-white inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>

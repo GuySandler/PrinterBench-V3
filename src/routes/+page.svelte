@@ -27,6 +27,10 @@
             <P size="xl" align="center">Add Reviews</P>
             <P align="center">Look for your Printer and Add a Review</P>
         </Card>
+        <Card style="margin:10px;display:inline-block;height:10vh;vertical-align:top;" href="/survey">
+            <P size="xl" align="center">Find Which Printer is Right for You</P>
+            <P align="center">Just answer the simple survey</P>
+        </Card>
     </div>
     <!-- <P>{test}</P> -->
 </div>

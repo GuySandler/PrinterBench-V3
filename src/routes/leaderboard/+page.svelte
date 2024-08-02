@@ -3,7 +3,7 @@
     import StarRating from 'svelte-star-rating';
     import { goto } from '$app/navigation';
     import { profileImg, profileName, profileFavs, profileImportant } from "../../stores";
-    import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs, isImportant } from "$lib/firebase"
+    import { GetLeaderboard, GetReviews, AddReview, SetFavs, GetUserFavs, isImportant, getSubCollection } from "$lib/firebase"
     import { onMount } from 'svelte';
 
     import { dev } from '$app/environment';
@@ -180,6 +180,8 @@
     let testsizez = 0;
     let testacceleration = 0;
     let testspeed = 0;
+
+    let shopModal = false;
 </script>
 <style>
     .centerFlexBox {
@@ -434,13 +436,41 @@
                     </TabItem>
                 </Tabs>
                 <svelte:fragment slot="footer">
-                    {#if GotData.link.includes("https://")}
-                        <Button href="{GotData.link}" target="_blank">Shop</Button>
-                    {:else}
-                        <Button href="https://{GotData.link}" target="_blank">Shop</Button>
-                    {/if}
+                    <Button on:click={() => shopModal = true}>Shop</Button>
                     <!-- <A href={"https://"+GotData.link}>Shop</A> -->
                     <Button color="alternative" on:click={() => modal = false}>Close</Button>
+                    {#await getSubCollection("approved", GotData.name, "cases")}
+                        <Spinner size={8} />
+                    {:then data}
+                        <P align="right">This Printer Has {data.length} Submittion(s)</P>
+                    {/await}
+                </svelte:fragment>
+            </Modal>
+            <Modal title="Support a Creator" color={"yellow"} bind:open={shopModal}>
+                {#await getSubCollection("approved", GotData.name, "cases")}
+                    <Spinner size={8} />
+                {:then data}
+                    {#each data as item}
+                        <!-- <P>{item.affiliateLink != ''}, {typeof item.affiliateLink}</P> -->
+                        {#if item.affiliateLink != ''}
+                            {#if item.affiliateLink.includes("https://")}
+                                <Button href="{item.affiliateLink}" target="_blank">{item.channelName}</Button>
+                            {:else}
+                                <Button href="https://{item.affiliateLink}" target="_blank">{item.channelName}</Button>
+                            {/if}
+                        {:else}
+                            <P>No Creators</P>
+                        {/if}
+                    {/each}
+                {:catch}
+                    <P>No Creators</P>
+                {/await}
+                <svelte:fragment slot="footer">
+                    {#if GotData.link.includes("https://")}
+                        <Button align="center" href="{GotData.link}" target="_blank">Normal Shop</Button>
+                    {:else}
+                        <Button align="center" href="https://{GotData.link}" target="_blank">Normal Shop</Button>
+                    {/if}
                 </svelte:fragment>
             </Modal>
         {:catch error}

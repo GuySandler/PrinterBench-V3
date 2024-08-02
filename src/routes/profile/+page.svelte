@@ -228,6 +228,11 @@
                         {/if}
                         <!-- <a href={"https://"+GotData.link}>Shop</a> -->
                         <Button color="alternative" on:click={() => modal = false}>Close</Button>
+                        {#await getSubCollection("approved", GotData.name, "cases")}
+                            <Spinner size={8} />
+                        {:then data}
+                            <P align="right">This Printer Has {data.length} Submittion(s)</P>
+                        {/await}
                     </svelte:fragment>
                 </Modal>
             {:catch error}
